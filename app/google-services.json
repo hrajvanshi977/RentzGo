@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "38405746445",
+    "project_id": "rentzgo-c5851",
+    "storage_bucket": "rentzgo-c5851.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38405746445:android:6f2e155503f98e8158ca44",
+        "android_client_info": {
+          "package_name": "com.india.rentzgo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38405746445-08r24a1ljrdbja2ueftjkda9g0v72hl9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.india.rentzgo",
+            "certificate_hash": "fbe839c4818bcc0c25d349999c9bf3ca29ee4c40"
+          }
+        },
+        {
+          "client_id": "38405746445-0m3p3lejj25eqvmbgf55jhjhdbpnmnsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTkAIrk6WlTfHAbhep3B5qHN5usxdGarM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38405746445-0m3p3lejj25eqvmbgf55jhjhdbpnmnsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
