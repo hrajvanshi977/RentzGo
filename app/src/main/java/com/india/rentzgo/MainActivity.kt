@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -111,15 +112,17 @@ class MainActivity : AppCompatActivity() {
         logInEmail = findViewById(R.id.logInEmail)
         logInPassword = findViewById(R.id.logInPassword)
 
-        if (logInEmail.text.isEmpty()) {
+        val logInEmailString = logInEmail.text.toString().trim()
+        val logInPasswordString = logInPassword.text.toString().trim()
+
+
+        if (TextUtils.isEmpty(logInEmailString)) {
             logInEmail.setError("Email is required")
-        } else if (logInPassword.text.isEmpty()) {
+        } else if (TextUtils.isEmpty(logInPasswordString)) {
             logInPassword.setError("Password is required")
         } else {
-            firebaseAuth = Firebase.auth
-            val currentUser = firebaseAuth.currentUser
-
-            firebaseAuth.signInWithEmailAndPassword(logInEmail.toString(), logInPassword.toString())
+            firebaseAuth = FirebaseAuth.getInstance()
+            firebaseAuth.signInWithEmailAndPassword(logInEmailString, logInPasswordString)
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             Toast.makeText(this, "Sign in successfully :)", Toast.LENGTH_SHORT).show()

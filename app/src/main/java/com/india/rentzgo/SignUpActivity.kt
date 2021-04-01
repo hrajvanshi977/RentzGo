@@ -42,8 +42,8 @@ class SignUpActivity : AppCompatActivity() {
             firebaseAuth = FirebaseAuth.getInstance()
 
 
-            val firstNameString = email.text.toString().trim()
-            val lastNameString = email.text.toString().trim()
+            val firstNameString = firstName.text.toString().trim()
+            val lastNameString = lastName.text.toString().trim()
             val emailString = email.text.toString().trim()
             val passwordString = password.text.toString().trim()
             val confirmPasswordString = password.text.toString().trim()
