@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    tools:context=".HousesMapActivity" >
+
+<!--    <Button-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Logout"-->
+<!--        android:id="@+id/logoutMap"/>-->
+
+    <Button
+        android:id="@+id/getNearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Houses" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       />
+
+</FrameLayout>
