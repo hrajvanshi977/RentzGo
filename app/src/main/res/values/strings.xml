@@ -11,4 +11,12 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_demo">demo</string>
+    <string name="title_activity_demo1">Demo1</string>
+    <string name="title_activity_demo11">Demo1Activity1</string>
+    <string name="title_activity_demo111">Demo11Activity1</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

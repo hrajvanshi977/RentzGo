@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import com.example.rentzgo.Users.Users
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -29,17 +30,14 @@ class HousesLists : AppCompatActivity() {
 
     lateinit var database: FirebaseDatabase
 
+    lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_houses_lists)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -53,25 +51,30 @@ class HousesLists : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val signInAccount: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this)!!
+        firebaseAuth = FirebaseAuth.getInstance()
 
-        if (signInAccount != null) {
-            val user = Users(
-                signInAccount.displayName.toString(),
-                signInAccount.email.toString(),
-                signInAccount.givenName.toString(),
-                signInAccount.familyName.toString(),
-                signInAccount.photoUrl.toString()
-            )
+        if (firebaseAuth.currentUser != null) {
 
-            database = FirebaseDatabase.getInstance()
+        } else {
+            val signInAccount: GoogleSignInAccount = GoogleSignIn.getLastSignedInAccount(this)!!
+            if (signInAccount != null) {
+                val user = Users(
+                    signInAccount.displayName.toString(),
+                    signInAccount.email.toString(),
+                    signInAccount.givenName.toString(),
+                    signInAccount.familyName.toString(),
+                    signInAccount.photoUrl.toString()
+                )
 
-            dbReference = database.getReference()
+                database = FirebaseDatabase.getInstance()
 
-            dbReference.child("Users").child(signInAccount.id.toString()).setValue(user);
+                dbReference = database.getReference()
 
-            Log.i("FullName", signInAccount.displayName.toString())
-            Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
+                dbReference.child("Users").child(signInAccount.id.toString()).setValue(user);
+
+                Log.i("FullName", signInAccount.displayName.toString())
+                Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
