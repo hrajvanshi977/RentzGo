@@ -23,6 +23,13 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="Theme.RentzGo.NoActionBarWithStatusBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="colorPrimary">@color/primary_color</item>
+    </style>
+
 <!--    <style name="Theme.RentzGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
     <style name="Theme.RentzGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />

@@ -6,10 +6,16 @@
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_home" />
 
+
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/navigation_myads"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:title="My Ads" />
+
+    <item
+        android:id="@+id/navigation_doPost"
+        android:icon="@drawable/ic_add_circle_outline_black_24dp"
+        android:title="Rent" />
 
     <item
         android:id="@+id/navigation_notifications"
@@ -17,8 +23,8 @@
         android:title="@string/title_notifications" />
 
     <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="Search" />
+        android:id="@+id/navigation_account"
+        android:icon="@drawable/account_circle"
+        android:title="Profile" />
 
 </menu>
