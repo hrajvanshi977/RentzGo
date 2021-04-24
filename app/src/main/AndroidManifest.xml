@@ -16,12 +16,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentzGo">
+        <activity
+            android:name=".PostActivity"
+            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"></activity>
 
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/slide_in_left" />
 
-        <activity android:name=".LoginActivity" android:theme="@style/Theme.RentzGo1"/>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/Theme.RentzGo1" />
         <activity android:name=".SignUpActivity" />
         <activity
             android:name=".HousesLists"

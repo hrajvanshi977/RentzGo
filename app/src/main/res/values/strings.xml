@@ -19,6 +19,19 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_myAds">My Ads</string>
+    <string name="title_doPost">Rent</string>
+    <string name="title_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="Houses">
+        <item>Individual Rooms</item>
+        <item>PGs</item>
+        <item>Hostels</item>
+        <item>Flats</item>
+        <item>Houses/Villas</item>
+    </string-array>
+
 </resources>

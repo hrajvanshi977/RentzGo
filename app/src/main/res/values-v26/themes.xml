@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.RentzGo.AllowActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:icon">@drawable/ic_arrow_back_black_24dp__1_</item>
+        <item name="android:iconTint">@color/white</item>
+    </style>
+</resources>

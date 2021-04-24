@@ -26,10 +26,19 @@
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <item name="colorOnPrimary">@color/white</item>
 
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:icon">@drawable/ic_arrow_back_black_24dp__1_</item>
+    </style>
+
+
+    <style name="Theme.RentzGo.themeForBottomBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/white</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
-        <item name="android:windowFullscreen">false</item>
     </style>
 
     <style name="Theme.RentzGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />

@@ -1,13 +1,13 @@
-package com.india.rentzgo.ui.notifications
+package com.india.rentzgo.ui.myads
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class MyAdsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "This is My Ads Fragment"
     }
     val text: LiveData<String> = _text
 }
