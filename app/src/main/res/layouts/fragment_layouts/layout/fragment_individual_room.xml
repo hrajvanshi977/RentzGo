@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".ui.fragments.postFragments.individualRooms.IndividualRoomFragment">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/propertyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:maxLines="1"
+                android:hint="Your Advertisement Title*"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_marginTop="15dp"
+                android:hint="max people"
+                android:inputType="number"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/furnishing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:focusable="false"
+                android:maxLines="1"
+                android:hint="Furnishing"
+                android:textColor="@color/gray" />
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/facing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:focusable="false"
+                android:hint="Facing"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:hint="Total Floors"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:hint="Current Floor"
+                android:maxLines="1"
+                android:inputType="number"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/parking_facility"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:focusable="false"
+                android:hint="Parking Facility"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bachelors_allowed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:focusable="false"
+                android:hint="Bachelors Allowed ?"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/non_veg_allowed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:focusable="false"
+                android:hint="Non-Veg Allowed?"
+                android:maxLines="1"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/drink_smoke_allowed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:focusable="false"
+                android:maxLines="1"
+                android:hint="Drink and Smoking Allowed?"
+                android:textColor="@color/gray" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:hint="Describe this property"
+                android:maxLines="1"
+                android:textColor="@color/gray" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:focusable="false"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:outlineSpotShadowColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@color/primary_color"
+                android:text="Go"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

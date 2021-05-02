@@ -1,11 +1,8 @@
-package com.india.rentzgo.Utils
+package com.india.rentzgo.utils
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 
 class PermissionsUtils : AppCompatActivity() {
 

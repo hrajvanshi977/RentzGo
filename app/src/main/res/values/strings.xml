@@ -34,4 +34,32 @@
         <item>Houses/Villas</item>
     </string-array>
 
+
+    <string-array name="furnishing">
+        <item>Fully Furnished</item>
+        <item>Semi Furnished</item>
+        <item>Unfurnished</item>
+    </string-array>
+
+    <string-array name="facing">
+        <item>East</item>
+        <item>West</item>
+        <item>North</item>
+        <item>South</item>
+        <item>North-East</item>
+        <item>south-East</item>
+        <item>North-west</item>
+        <item>south-west</item>
+    </string-array>
+
+    <string-array name="yes_no">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="parking_facility">
+        <item>Car</item>
+        <item>Bike</item>
+    </string-array>
+
 </resources>
