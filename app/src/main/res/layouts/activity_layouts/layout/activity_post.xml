@@ -4,19 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <androidx.cardview.widget.CardView
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary_color"
+        android:layout_height="60dp"
+        android:background="@color/white"
         app:layout_constraintVertical_weight="1"
+        android:outlineSpotShadowColor="@color/black"
         tools:ignore="MissingConstraints">
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:layout_marginLeft="15dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -25,21 +29,21 @@
                 android:foregroundGravity="center"
                 android:onClick="finish"
                 android:src="@drawable/ic_close_black_24dp"
-                app:tint="@color/white" />
+                app:tint="@color/black" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:text="Add your detail here!"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="18sp" />
         </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+    </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:tag="frag"
-        android:id="@+id/fragment_container"
+        android:id="@+id/post_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

@@ -1,5 +1,6 @@
 package com.india.rentzgo.ui.fragments.postFragments.individualRooms
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.india.rentzgo.PropertyPriceActivity
 import com.india.rentzgo.utils.dialog.IndividualsRoomDialog
 import com.india.rentzgo.R
 
@@ -30,7 +32,7 @@ class IndividualRoomFragment : Fragment() {
 
         val parkingFacility = view.findViewById(R.id.parking_facility) as EditText
         parkingFacility.setOnClickListener {
-            openDialog(R.array.parking_facility, parkingFacility,"Parking Facility")
+            openDialog(R.array.parking_facility, parkingFacility, "Parking Facility")
         }
 
         val bachelorsAllowed = view.findViewById(R.id.bachelors_allowed) as EditText
@@ -47,8 +49,15 @@ class IndividualRoomFragment : Fragment() {
         drinkSmokeAllowed.setOnClickListener {
             openDialog(R.array.yes_no, drinkSmokeAllowed, "Drink & smoke allowed?")
         }
+
+        val nextButton = view.findViewById(R.id.nextIndividual) as TextView
+        nextButton.setOnClickListener {
+            val intent = Intent(view.context, PropertyPriceActivity::class.java)
+            startActivity(intent)
+        }
         return view
     }
+
 
     private fun openDialog(id: Int, textView: EditText, propertyFieldsText: String) {
         val dialog = IndividualsRoomDialog(id, textView, propertyFieldsText)

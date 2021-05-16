@@ -157,11 +157,12 @@
             app:layout_constraintTop_toTopOf="@+id/toolbar">
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/nextIndividual"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:background="@color/primary_color"
-                android:text="Go"
+                android:text="Next"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
         </RelativeLayout>

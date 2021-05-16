@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.india.rentzgo.Users.Demo
 
 class ImageClassAdapter(private val mHouse: List<String>) :
     RecyclerView.Adapter<ImageClassAdapter.ViewHolder>() {

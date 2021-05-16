@@ -1,9 +1,7 @@
 package com.india.rentzgo
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.india.rentzgo.ui.fragments.postFragments.PropertyTypeFragment
 import com.india.rentzgo.ui.fragments.postFragments.individualRooms.IndividualRoomFragment

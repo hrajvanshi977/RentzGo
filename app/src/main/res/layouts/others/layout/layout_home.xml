@@ -31,14 +31,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/house_image" />
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/home_images"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:padding="10dp"-->
-<!--                android:orientation="horizontal" />-->
-
         </LinearLayout>
 
         <LinearLayout
@@ -71,7 +63,6 @@
                 android:textColor="#546E7A"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +71,6 @@
             android:layout_marginLeft="10dp"
             android:orientation="horizontal">
 
-
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -88,7 +78,6 @@
                 android:text="Dev Nagar B, Near Railway.."
                 android:textColor="#546E7A"
                 android:textSize="13sp" />
-
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -110,7 +99,6 @@
                     android:layout_height="wrap_content"
                     android:text="/5"
                     android:textColor="#546E7A" />
-
             </LinearLayout>
         </LinearLayout>
 
@@ -172,7 +160,6 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
         </LinearLayout>
-
     </LinearLayout>
 
 

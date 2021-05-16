@@ -62,7 +62,6 @@ class MainActivityTest : AppCompatActivity() {
         nextButton.setOnClickListener {
             val uid = FirebaseAuth.getInstance().currentUser.uid
             val filePath = FirebaseStorage.getInstance().getReference().child("Images").child(uid)
-                .child("HouseImages")
             val list = imageAdapter.thisList
 
             if(list.size != 1) {

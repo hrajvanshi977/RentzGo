@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.india.rentzgo">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <supports-screens
         android:anyDensity="true"
@@ -14,15 +16,19 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:hardwareAccelerated="false"
         android:theme="@style/Theme.RentzGo">
+        <activity android:name=".PropertyPriceActivity"
+            android:theme="@style/Theme.RentzGo.NoActionBar">
+
+        </activity>
         <activity
             android:name=".MainActivityTest"
-            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"/>
+            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar" />
         <activity
             android:name=".PostActivity"
             android:screenOrientation="portrait"
@@ -43,6 +49,7 @@
         <activity
             android:name=".HousesLists"
             android:label="@string/title_activity_houses_lists"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar" />
         <activity
             android:name=".MainActivity"
@@ -62,9 +69,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

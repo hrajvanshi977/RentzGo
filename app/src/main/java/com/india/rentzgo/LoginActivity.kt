@@ -11,45 +11,26 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.loader.app.LoaderManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.ActionCodeEmailInfo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import java.io.LineNumberReader
-import java.util.concurrent.ThreadLocalRandom
+import com.india.rentzgo.utils.DBUtils
 
 class LoginActivity : AppCompatActivity() {
-
-    //Buttons
     private lateinit var loginButton: CardView
     private lateinit var googleSignInButton: CardView
-
     private lateinit var signInButtonTextview: TextView
-
     private lateinit var googleSignInButtonTextview: TextView
-
     private lateinit var signProgressBarAnimation: LottieAnimationView
-
     private lateinit var googleSignProgressBarAnimation: LottieAnimationView
-
     private lateinit var logInEmail: EditText
-
     private lateinit var logInPassword: EditText
-
     private lateinit var firebaseAuth: FirebaseAuth
-
     private lateinit var googleSignInClient: GoogleSignInClient
-
-//    private lateinit var dbReference: DatabaseReference
-//    private lateinit var database: FirebaseDatabase
 
     private val RC_SIGN_IN = 123
 
@@ -64,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
         initializationOfAllFields()
         signProgressBarAnimation.visibility = LottieAnimationView.GONE
         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
-        createRequest();
+        createRequest()
         findViewById<LinearLayout>(R.id.loginLinearLayout).setOnTouchListener { _: View, _: MotionEvent ->
             closeKeyBoard()
         }
@@ -181,10 +162,10 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
                     Handler().postDelayed({
                         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
                         googleSignInButtonTextview.setText("Continue With Google")
+                        DBUtils().saveUser(this)
                         val intent = Intent(applicationContext, HousesLists::class.java)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
