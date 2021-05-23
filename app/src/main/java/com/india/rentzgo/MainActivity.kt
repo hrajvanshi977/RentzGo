@@ -1,7 +1,5 @@
 package com.india.rentzgo
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -15,44 +13,95 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.preference.PreferenceManager
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryEventListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.india.rentzgo.utils.BaseUtil
+import com.india.rentzgo.utils.PropertiesAndDistance
+import single.NearbyProperties
+
 
 class MainActivity : AppCompatActivity(), GeoQueryEventListener, LocationListener {
 
-    private val SPLASH_SCREEN: Long = 2000
+    private val SPLASH_SCREEN: Long = 6000
 
     lateinit var locationManager: LocationManager
     lateinit var locationListener: LocationListener
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     var latitude: Double = 0.0;
     var longitude: Double = 0.0;
-
+    lateinit var firebaseReference: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        firebaseReference =
+            FirebaseDatabase.getInstance().getReference().child("Properties").child("India")
+                .child("Rajasthan").child("Jaipur")
+        getData()
         var sharedPreference: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
         var sharedPreferenceEditor: SharedPreferences.Editor = sharedPreference.edit()
         var gson = Gson()
         var json: String = gson.toJson(ArrayList<String>())
         sharedPreferenceEditor.putString("Houses", json).commit()
 
-        getCurrentLocation()
-        Handler().postDelayed({
+//        getCurrentLocation()
+        Handler(Looper.myLooper()!!).postDelayed({
             var intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             finish()
         }, SPLASH_SCREEN)
+    }
+
+    private fun getData() {
+        firebaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("Snapshot", "$snapshot")
+
+                for (datas in snapshot.getChildren()) {
+                    val latitude = datas.child("l").child("0").value.toString()
+                    val longitude = datas.child("l").child("1").value.toString()
+                    var id = datas.key.toString()
+                    Log.i("msgType", "${latitude}")
+                    Log.i("id", "${id}")
+
+                    val distance: Double =
+                        BaseUtil().getDistance(
+                            26.815192,
+                            75.769899,
+                            latitude.toDouble(),
+                            longitude.toDouble()
+                        ) as Double
+
+                    val source = Location("")
+//                    source.latitude = 26.815192
+//                    source.longitude = 75.769899
+                    source.latitude = 26.9012738
+                    source.longitude = 75.7275784
+
+                    val destination = Location("")
+                    destination.latitude = latitude.toDouble()
+                    destination.longitude = longitude.toDouble()
+
+                    val result = FloatArray(10)
+                    val from = LatLng(26.8172019, 75.7657745)
+                    val to = LatLng(latitude.toDouble(), longitude.toDouble())
+
+                    Location.distanceBetween(26.815262,75.7677224, 26.9373175, 75.8133372, result )
+                    NearbyProperties.list.add(PropertiesAndDistance(result[0], id))
+                    Log.i("distance", "${latitude.toDouble()}, ${result[0]}")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
     }
 
     override fun onGeoQueryReady() {
@@ -61,6 +110,7 @@ class MainActivity : AppCompatActivity(), GeoQueryEventListener, LocationListene
 
     override fun onKeyEntered(key: String?, location: GeoLocation?) {
         Log.d("MyKey", key.toString())
+//        NearbyProperties.list.add(key.toString())
         var sharedPreference: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
         var sharedPreferenceEditor: SharedPreferences.Editor = sharedPreference.edit()
         var json: String? = sharedPreference.getString("Houses", "")

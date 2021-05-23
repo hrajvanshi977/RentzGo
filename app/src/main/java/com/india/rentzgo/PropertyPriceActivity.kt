@@ -1,9 +1,13 @@
 package com.india.rentzgo
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +19,7 @@ import com.india.rentzgo.data.base.Properties
 import com.india.rentzgo.utils.BaseUtil
 import com.india.rentzgo.utils.DBUtils
 import single.LatitudeLongitude
+import single.NearbyProperties
 import java.util.*
 
 class PropertyPriceActivity : AppCompatActivity() {
@@ -25,16 +30,29 @@ class PropertyPriceActivity : AppCompatActivity() {
         val submit = findViewById<Button>(R.id.materialButton)
         submit.setOnClickListener {
             setBuilder()
-            for (index in 1..1000) {
-                Handler().postDelayed({
-                    val property = getPropertyInfo(index)
-                    DBUtils().saveProperty(property, index)
-                }, 1000)
-            }
+            getCurrentLocationAddress()
+            DBUtils().saveProperty(getPropertyInfo(6), 6)
+            Handler(Looper.myLooper()!!).postDelayed({
+                val intent = Intent(this, SuccessfullyAdded::class.java)
+                startActivity(intent)
+                finish()
+            }, 3000)
         }
     }
 
-    private fun getPropertyInfo(i: Int): Property {
+    private fun getCurrentLocationAddress() {
+        Log.i("NearbyProperties", "${NearbyProperties.list.size}")
+        val geoCode = Geocoder(this, Locale.getDefault())
+
+        Log.i("Latitude and Longitude", "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}")
+        var addresses: List<android.location.Address?> =
+            geoCode.getFromLocation(LatitudeLongitude.latitude, LatitudeLongitude.longitude, 1)
+
+//        Log.i("My address", addresses.get(0)!!.getAddressLine(0))
+        Log.i("Full address", addresses.toString())
+    }
+
+    fun getPropertyInfo(i: Int): Property {
         firebaseFirestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser.uid
         val priceView = findViewById<EditText>(R.id.priceView)

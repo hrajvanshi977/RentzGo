@@ -70,6 +70,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
     implementation 'com.google.firebase:firebase-functions:19.2.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -85,4 +86,5 @@ dependencies {
 
     def lottieVersion ="3.7.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+    implementation 'com.google.maps.android:maps-utils-ktx:2.4.0'
 }

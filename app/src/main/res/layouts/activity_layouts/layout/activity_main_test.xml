@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivityTest">
 
     <androidx.cardview.widget.CardView
@@ -35,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:text="Upload some images "
+                android:text="Please upload your photos"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
         </RelativeLayout>
@@ -91,7 +92,7 @@
             android:tint="@color/white" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/next"
+            android:id="@+id/submitHomeImages"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="15dp"

@@ -2,19 +2,15 @@ package com.india.rentzgo.ui.fragments.postFragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.india.rentzgo.MainActivityTest
-import com.india.rentzgo.PostActivity
 import com.india.rentzgo.R
-import com.india.rentzgo.UploadHouseImageFragment
-import com.india.rentzgo.ui.fragments.postFragments.individualRooms.IndividualRoomFragment
 
 class PropertyTypeFragment : ListFragment() {
     override fun onCreateView(
@@ -33,6 +29,7 @@ class PropertyTypeFragment : ListFragment() {
         )
         listAdapter = adapter
     }
+
 
     override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
         if (position == 0) {

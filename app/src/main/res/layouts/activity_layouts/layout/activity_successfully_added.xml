@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/success_image"
+    tools:context=".SuccessfullyAdded">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/well_done" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="100dp"
+            android:layout_centerHorizontal="true"
+            app:lottie_rawRes="@raw/success_in_motion"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/animation"
+            android:text="Congratulations"
+            android:textAllCaps="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="23sp" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_below="@id/text1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:text="You have successfully posted your property."
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:gravity="center_horizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/text2">
+
+            <Button
+                android:id="@+id/viewYourProperties"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View your properties"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:background="@color/white"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="80dp"/>
+
+            <Button
+                android:id="@+id/postAnotherProperty"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:text="Post another property"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:background="@color/white"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="80dp"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/goToHomePage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to home page >>"
+            android:gravity="bottom"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            tools:ignore="OnClick" />
+    </RelativeLayout>
+</LinearLayout>

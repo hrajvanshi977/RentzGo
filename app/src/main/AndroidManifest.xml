@@ -3,7 +3,7 @@
     package="com.india.rentzgo">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -22,10 +22,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentzGo">
-        <activity android:name=".PropertyPriceActivity"
+        <activity
+            android:name=".SuccessfullyAdded"
             android:theme="@style/Theme.RentzGo.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".ShowPropertyInformation"
+            android:theme="@style/Theme.RentzGo.NoActionBar"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="API_KEY" />
+
+        <activity
+            android:name=".PropertyPriceActivity"
+            android:theme="@style/Theme.RentzGo.NoActionBar" />
         <activity
             android:name=".MainActivityTest"
             android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar" />
@@ -49,8 +61,8 @@
         <activity
             android:name=".HousesLists"
             android:label="@string/title_activity_houses_lists"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar" />
+            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

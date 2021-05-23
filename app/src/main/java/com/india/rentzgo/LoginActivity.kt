@@ -2,14 +2,17 @@ package com.india.rentzgo
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -54,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
             signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
             signInButtonTextview.setText("")
             signInWithEmail()
+//            DBUtils().saveProperty(PropertyPriceActivity().getPropertyInfo(2), 2)
         }
 
         googleSignInButton.setOnClickListener {

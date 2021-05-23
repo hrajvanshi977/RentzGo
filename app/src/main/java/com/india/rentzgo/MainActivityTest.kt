@@ -14,14 +14,18 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import com.india.rentzgo.ui.fragments.postFragments.PropertyTypeFragment
-import com.india.rentzgo.ui.fragments.postFragments.individualRooms.IndividualRoomFragment
+import single.LatitudeLongitude
 import java.io.ByteArrayOutputStream
 
 
@@ -31,62 +35,82 @@ class MainActivityTest : AppCompatActivity() {
     lateinit var imageUri: Uri
     private var dotCount = 0
     private var myList = arrayListOf<Int>()
-    val REQUEST_TAKE_PHOTO = 1
-    lateinit var currentPhotoPath: String
     lateinit var imageClickButton: ImageView
     lateinit var imageAdapter: ImageAdapter
     lateinit var pager: ViewPager
+    var flag = 0
+    var count = 0
     private var linearLayoutList = arrayOfNulls<ImageView>(0)
-    private var myImages = ArrayList<Bitmap>()
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private lateinit var lottianimation: LottieAnimationView
+    private lateinit var textView: TextView
+
+    private fun initialization() {
+        imageAdapter = ImageAdapter
+        pager = findViewById(R.id.viewPage)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_test)
-
+        initialization()
+        saveCurrentLocation()
         myList.add(R.raw.photo_uploading)
-//        setAdapter()
-        imageAdapter = ImageAdapter
-        pager = findViewById(R.id.viewPage)
         pager.adapter = imageAdapter
         val layoutInflater = this.layoutInflater
         val view = layoutInflater.inflate(R.layout.layout_image_click, null)
+        lottianimation = view.findViewById(R.id.animation)
+        textView = view.findViewById(R.id.uploadHomeImageText)
+        textView.setText("Uploading more photos increases chances of renting your property!")
         ImageAdapter.thisList = ArrayList()
         imageAdapter.addView(view, 0)
         imageAdapter.notifyDataSetChanged()
-
         setIndicator()
         imageClickButton = findViewById(R.id.camera)
-
-        val nextButton = findViewById<ImageView>(R.id.next)
-
+        val nextButton = findViewById<ImageView>(R.id.submitHomeImages)
         nextButton.setOnClickListener {
-            val uid = FirebaseAuth.getInstance().currentUser.uid
-            val filePath = FirebaseStorage.getInstance().getReference().child("Images").child(uid)
-            val list = imageAdapter.thisList
+            if (flag != 0) {
+                val builder = android.app.AlertDialog.Builder(this)
+                builder.setMessage("Please Upload atleast one photo of your property!")
+                builder.setCancelable(true)
+                builder.setPositiveButton(
+                    "ok"
+                ) { dialog, id -> dialog.cancel() }
+                val alert = builder.create()
+                alert!!.show()
+            } else {
+                val uid = FirebaseAuth.getInstance().currentUser.uid
+                val filePath =
+                    FirebaseStorage.getInstance().getReference().child("Images").child(uid)
+                val list = imageAdapter.thisList
 
-            if(list.size != 1) {
-                for (item in 1..(list.size - 1)) {
-                    val view = list.get(item)
-                    val imageView = view.findViewById<ImageView>(R.id.imageMine)
-                    val baos = ByteArrayOutputStream()
-                    imageView.invalidate()
-                    val drawable = imageView.drawable as BitmapDrawable
-                    val bitmap = drawable.bitmap
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-                    val array = baos.toByteArray()
-                    val uploadTask = filePath.child(item.toString()).putBytes(array)
+                if (list.size != 1) {
+                    for (item in 1..(list.size - 1)) {
+                        val view = list.get(item)
+                        val imageView = view.findViewById<ImageView>(R.id.imageMine)
+                        val baos = ByteArrayOutputStream()
+                        imageView.invalidate()
+                        val drawable = imageView.drawable as BitmapDrawable
+                        val bitmap = drawable.bitmap
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
+                        val array = baos.toByteArray()
+                        val uploadTask = filePath.child(item.toString()).putBytes(array)
+                    }
                 }
+                val postActivityIntent = Intent(this, PostActivity::class.java)
+                postActivityIntent.putExtra("IndividualRoom", "1")
+                startActivity(postActivityIntent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
-            val postActivityIntent = Intent(this, PostActivity::class.java)
-            postActivityIntent.putExtra("IndividualRoom", "1")
-            startActivity(postActivityIntent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         imageClickButton.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED || checkSelfPermission(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_DENIED
                 ) {
                     requestPermissions(
@@ -104,27 +128,25 @@ class MainActivityTest : AppCompatActivity() {
         }
     }
 
+
     private fun setIndicator() {
         var linearLayout = findViewById<LinearLayout>(R.id.linearLayout)
         linearLayout.removeAllViews()
-
         dotCount = imageAdapter.count
-        linearLayoutList = arrayOfNulls<ImageView>(dotCount)
-        var size1 = linearLayoutList.size
+            linearLayoutList = arrayOfNulls(dotCount)
 
         Log.i("size of the array", dotCount.toString())
-
 
         for (item in 0..dotCount - 1) {
             linearLayoutList[item] = ImageView(this)
             linearLayoutList[item]?.setImageDrawable(
                 ContextCompat.getDrawable(
                     applicationContext,
-                    R.drawable.checkbox_blank_circle_outline
+                    R.drawable.inactive_image_circle
                 )
             )
             var params =
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -136,10 +158,10 @@ class MainActivityTest : AppCompatActivity() {
 
             linearLayout.addView(linearLayoutList[item], params)
         }
-        linearLayoutList[0]?.setImageDrawable(
+        linearLayoutList[imageAdapter.thisList.size - 1]?.setImageDrawable(
             ContextCompat.getDrawable(
                 applicationContext,
-                R.drawable.checkbox_blank_circle
+                R.drawable.active_image_circle
             )
         )
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -151,19 +173,18 @@ class MainActivityTest : AppCompatActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                var size = linearLayoutList.size
                 for (item in 0..dotCount - 1) {
                     linearLayoutList[item]?.setImageDrawable(
                         ContextCompat.getDrawable(
                             applicationContext,
-                            R.drawable.checkbox_blank_circle_outline
+                            R.drawable.inactive_image_circle
                         )
                     )
                 }
                 linearLayoutList[position]?.setImageDrawable(
                     ContextCompat.getDrawable(
                         applicationContext,
-                        R.drawable.checkbox_blank_circle
+                        R.drawable.active_image_circle
                     )
                 )
             }
@@ -171,6 +192,7 @@ class MainActivityTest : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {
             }
         })
+        pager.setCurrentItem(count - 1)
     }
 
     override fun finish() {
@@ -183,6 +205,7 @@ class MainActivityTest : AppCompatActivity() {
     }
 
     private fun openCamera() {
+//        saveCurrentLocation()
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the camera")
@@ -190,6 +213,25 @@ class MainActivityTest : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
         startActivityForResult(intent, IMAGE_CAPTURE_CODE)
+    }
+
+    private fun saveCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+            if (it != null) {
+                LatitudeLongitude.latitude = it.latitude
+                LatitudeLongitude.longitude = it.longitude
+            }
+        }
     }
 
     fun addView(newPage: View) {
@@ -218,10 +260,20 @@ class MainActivityTest : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             val layoutInflater = this.layoutInflater
             val view = layoutInflater.inflate(R.layout.layout_image_click, null)
+            lottianimation = view.findViewById(R.id.animation)
+            lottianimation.visibility = View.GONE
             val imageView = view.findViewById<ImageView>(R.id.imageMine)
             imageView.setImageURI(null)
             imageView.setImageURI(imageUri)
-            imageAdapter.addView(view)
+
+            if (flag == 0) {
+                imageAdapter.setView(0, view)
+                pager.adapter = imageAdapter
+                flag++
+            } else {
+                imageAdapter.addView(view)
+            }
+            count++
             imageAdapter.notifyDataSetChanged()
             setIndicator()
         }

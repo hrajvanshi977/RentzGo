@@ -10,10 +10,10 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.view.get
 import com.india.rentzgo.R
 
-class IndividualsRoomDialog(itemId: Int, propertyFields: EditText, propertyFieldsText: String) : AppCompatDialogFragment() {
+class IndividualsRoomDialog(itemId: Int, propertyFields: EditText, propertyFieldsText: String) :
+    AppCompatDialogFragment() {
     private val itemId: Int = itemId
     private val propertyFields: EditText = propertyFields
     private val propertyFieldsText: String = propertyFieldsText
@@ -25,7 +25,7 @@ class IndividualsRoomDialog(itemId: Int, propertyFields: EditText, propertyField
         propertyFieldsTextView.setText(propertyFieldsText)
         val builder = AlertDialog.Builder(activity)
 
-        setViewForDialog(view, itemId)
+        setListViewForDialog(view, itemId)
         val cancel = view.findViewById(R.id.cancel_dialog) as TextView
 
         val listView = view.findViewById(R.id.dialog_list) as ListView
@@ -43,7 +43,7 @@ class IndividualsRoomDialog(itemId: Int, propertyFields: EditText, propertyField
         return builder.create()
     }
 
-    private fun setViewForDialog(view: View, itemId: Int) {
+    private fun setListViewForDialog(view: View, itemId: Int) {
         val listView = view.findViewById(R.id.dialog_list) as ListView
         val adapter = ArrayAdapter.createFromResource(
             requireActivity(),

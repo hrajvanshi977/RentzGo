@@ -32,7 +32,15 @@ object ImageAdapter : PagerAdapter() {
     }
 
     fun addView(view: View, position: Int) : Int{
-        thisList.add(position, view);
+        thisList.add(position, view)
         return position
+    }
+
+    fun clearView() {
+        thisList = ArrayList()
+    }
+
+    fun setView(index: Int, view: View) {
+        thisList.set(index, view)
     }
 }

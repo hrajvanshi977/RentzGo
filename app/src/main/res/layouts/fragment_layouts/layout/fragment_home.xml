@@ -9,7 +9,6 @@
     android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,28 +33,31 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/locationSearch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="4"
+                    android:layout_margin="5dp"
+                    android:background="@android:drawable/editbox_background"
                     android:drawableLeft="@drawable/ic_search_black_24dp"
                     android:drawablePadding="10dp"
+                    android:focusable="false"
                     android:hint="Search here"
+                    android:padding="13dp"
                     android:textAllCaps="false" />
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@color/primary_color"
-                    android:text="Search"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                <!--                <Button-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_margin="10dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:background="@color/primary_color"-->
+                <!--                    android:text="Search"-->
+                <!--                    android:textAllCaps="false"-->
+                <!--                    android:textColor="@color/white" />-->
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 
     <LinearLayout
@@ -63,28 +65,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/home_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
-            <ProgressBar
-                android:id="@+id/homeProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_margin="20dp"
-                android:visibility="visible" />
-            </LinearLayout>
-        </ScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/homeProgressBar"
+                    app:lottie_rawRes="@raw/loading_6217"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/home_recycler_view"
+                    android:layout_margin="20dp"
+                    android:visibility="visible" />
+            </RelativeLayout>
+<!--        </ScrollView>-->
 
         <ProgressBar
             android:id="@+id/centerHomeProgressBar"
