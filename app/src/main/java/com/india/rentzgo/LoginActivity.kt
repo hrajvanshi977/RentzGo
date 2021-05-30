@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
@@ -34,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var logInPassword: EditText
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var handler: Handler
     private val RC_SIGN_IN = 123
 
     override fun onStart() {
@@ -42,27 +43,42 @@ class LoginActivity : AppCompatActivity() {
         signProgressBarAnimation.visibility = LottieAnimationView.GONE
         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         initializationOfAllFields()
+        handler = Handler(Looper.myLooper()!!)
         signProgressBarAnimation.visibility = LottieAnimationView.GONE
         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
-        createRequest()
+        Thread {
+            createRequest()
+        }.start()
         findViewById<LinearLayout>(R.id.loginLinearLayout).setOnTouchListener { _: View, _: MotionEvent ->
             closeKeyBoard()
         }
 
         loginButton.setOnClickListener {
             signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
-            signInButtonTextview.setText("")
-            signInWithEmail()
+            signInButtonTextview.text = ""
+
+            Handler(Looper.myLooper()!!).postDelayed({
+                if (firebaseAuth.currentUser != null) {
+                    signProgressBarAnimation.visibility = LottieAnimationView.GONE
+                    signInButtonTextview.text = "Go"
+                    val housesListsIntent = Intent(applicationContext, HousesLists::class.java)
+                    startActivity(housesListsIntent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finish()
+                } else {
+                    signInWithEmail()
+                }
+            }, 5000)
 //            DBUtils().saveProperty(PropertyPriceActivity().getPropertyInfo(2), 2)
         }
-
         googleSignInButton.setOnClickListener {
             googleSignProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
-            googleSignInButtonTextview.setText("")
+            googleSignInButtonTextview.text = ""
             signIn()
         }
     }
@@ -100,46 +116,39 @@ class LoginActivity : AppCompatActivity() {
         return false
     }
 
-    fun signInWithEmail() {
-        if (firebaseAuth.currentUser != null) {
-            var intent = Intent(this, HousesLists::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            finish()
+    private fun signInWithEmail() {
+        logInEmail = findViewById(R.id.logInEmail)
+        logInPassword = findViewById(R.id.logInPassword)
+
+        val logInEmailString = logInEmail.text.toString().trim()
+        val logInPasswordString = logInPassword.text.toString().trim()
+
+        if (TextUtils.isEmpty(logInEmailString)) {
+            logInEmail.error = "Email is required"
+            signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
+            signInButtonTextview.text = "Go"
+        } else if (TextUtils.isEmpty(logInPasswordString)) {
+            logInPassword.error = "Password is required"
+            signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
+            signInButtonTextview.text = "Go"
         } else {
-            logInEmail = findViewById(R.id.logInEmail)
-            logInPassword = findViewById(R.id.logInPassword)
-
-            val logInEmailString = logInEmail.text.toString().trim()
-            val logInPasswordString = logInPassword.text.toString().trim()
-
-            if (TextUtils.isEmpty(logInEmailString)) {
-                logInEmail.setError("Email is required")
-                signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
-                signInButtonTextview.setText("Go")
-            } else if (TextUtils.isEmpty(logInPasswordString)) {
-                logInPassword.setError("Password is required")
-                signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
-                signInButtonTextview.setText("Go")
-            } else {
-                firebaseAuth = FirebaseAuth.getInstance()
-                firebaseAuth.signInWithEmailAndPassword(logInEmailString, logInPasswordString)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Toast.makeText(this, "Sign in successfully :)", Toast.LENGTH_SHORT)
-                                .show()
-                            var intent = Intent(this, HousesLists::class.java)
-                            startActivity(intent)
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                            finish()
-                        } else {
-                            Toast.makeText(this, "Wrong Email or password :(", Toast.LENGTH_SHORT)
-                                .show()
-                            signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
-                            signInButtonTextview.setText("Go")
-                        }
+            firebaseAuth = FirebaseAuth.getInstance()
+            firebaseAuth.signInWithEmailAndPassword(logInEmailString, logInPasswordString)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Toast.makeText(this, "Sign in successfully :)", Toast.LENGTH_SHORT)
+                            .show()
+                        var intent = Intent(applicationContext, HousesLists::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Wrong Email or password :(", Toast.LENGTH_SHORT)
+                            .show()
+                        signProgressBarAnimation.visibility = LottieAnimationView.VISIBLE
+                        signInButtonTextview.text = "Go"
                     }
-            }
+                }
         }
     }
 
@@ -166,9 +175,9 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Handler().postDelayed({
+                    Handler(Looper.myLooper()!!).postDelayed({
                         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
-                        googleSignInButtonTextview.setText("Continue With Google")
+                        googleSignInButtonTextview.text = "Continue With Google"
                         DBUtils().saveUser(this)
                         val intent = Intent(applicationContext, HousesLists::class.java)
                         startActivity(intent)
@@ -180,5 +189,4 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
 }

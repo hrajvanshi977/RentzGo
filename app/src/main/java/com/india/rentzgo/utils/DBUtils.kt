@@ -13,8 +13,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.india.rentzgo.data.Property
+import com.google.firebase.storage.FirebaseStorage
 import com.india.rentzgo.data.base.Properties
+import com.india.rentzgo.data.properties.IndividualRoom
 import single.LatitudeLongitude
 import single.NearbyProperties
 import java.util.*
@@ -27,7 +28,8 @@ class DBUtils : AppCompatActivity() {
             signInAccount.givenName.toString(),
             signInAccount.familyName.toString(),
             signInAccount.email.toString(),
-            signInAccount.photoUrl.toString()
+            signInAccount.photoUrl.toString(),
+            ArrayList<String>()
         )
         firebaseFirestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser.uid
@@ -38,38 +40,40 @@ class DBUtils : AppCompatActivity() {
         }
     }
 
-    fun saveProperty(property: Property, index: Int) {
-        var addresses: List<android.location.Address?> = getCurrentLocationAddress()
-        Log.i("Here->", "${addresses}")
+    fun saveProperty(property: IndividualRoom, propertyId: String) {
+        val address: List<Address?> = getCurrentLocationAddress()
+        Log.i("Here->", "$address")
         firebaseFirestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser.uid
-        val countryName = addresses.get(0)!!.countryName
-        val adminArea = addresses.get(0)!!.adminArea
-        val subAdminArea = addresses.get(0)!!.subAdminArea
+        val countryName = address.get(0)!!.countryName
+        val adminArea = address.get(0)!!.adminArea
+        val subAdminArea = address.get(0)!!.subAdminArea
 
-                Log.i("Info", "${countryName}, ${adminArea}, ${subAdminArea}")
-                val path =
-            firebaseFirestore.collection("Properties/${index}/${Properties.INDIVIDUALROOM}")
+        Log.i("Info", "${countryName}, ${adminArea}, ${subAdminArea}")
+        val path =
+            firebaseFirestore.collection("Properties/${propertyId}/${Properties.INDIVIDUALROOM}")
                 .document("BasicInfo")
 
-            var path1 : Any?
-            path1 = if(subAdminArea == null) {
-                FirebaseDatabase.getInstance().getReference().child("Properties")
-                    .child(countryName).child(adminArea)
-            } else {
-                FirebaseDatabase.getInstance().getReference().child("Properties")
+        var path1: Any?
+
+        path1 = if (subAdminArea == null) {
+            FirebaseDatabase.getInstance().reference.child("Properties")
+                .child(countryName).child(adminArea)
+        } else {
+            FirebaseDatabase.getInstance().reference.child("Properties")
                 .child(countryName).child(adminArea).child(subAdminArea)
         }
 
+
+//        Log.i("Madarchod is", "$propertyId")
         val g = GeoFire(path1)
         g.setLocation(
-            "$index",
+            "$propertyId",
             GeoLocation(26.9146122, 75.8137346),
             GeoFire.CompletionListener { key, error -> })
         var batch = firebaseFirestore.batch()
         batch.set(path, property)
         batch.commit().addOnSuccessListener {
-
         }
     }
 
@@ -82,11 +86,19 @@ class DBUtils : AppCompatActivity() {
             "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}"
         )
         var addresses: List<android.location.Address?> =
-            geoCode.getFromLocation(26.9146122,75.8137346, 1)
+            geoCode.getFromLocation(26.9146122, 75.8137346, 1)
 
 //        Log.i("My address", addresses.get(0)!!.getAddressLine(0))
         Log.i("Full address", addresses.toString())
         return addresses
     }
 
+    fun savePropertyImages(images: ArrayList<ByteArray>, propertyId: String): Boolean {
+        val filePath =
+            FirebaseStorage.getInstance().reference.child("Images").child(propertyId)
+        for (index in 0 until images.size) {
+            val uploadTask = filePath.child(index.toString()).putBytes(images.get(index))
+        }
+        return true
+    }
 }

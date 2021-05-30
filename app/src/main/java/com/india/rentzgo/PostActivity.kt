@@ -3,13 +3,14 @@ package com.india.rentzgo
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.india.rentzgo.data.base.Properties
 import com.india.rentzgo.ui.fragments.postFragments.PropertyTypeFragment
 import com.india.rentzgo.ui.fragments.postFragments.individualRooms.IndividualRoomFragment
 
 
 class PostActivity : AppCompatActivity() {
     lateinit var intentT: Intent
-    val fragmentManager = supportFragmentManager
+    private val fragmentManager = supportFragmentManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
@@ -41,6 +42,7 @@ class PostActivity : AppCompatActivity() {
     }
 
     fun goForIndividualRoom() {
+        CurrentPostingProperty.PropertyType = Properties.INDIVIDUALROOM.toString()
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
             .add(R.id.post_fragment_container, IndividualRoomFragment())

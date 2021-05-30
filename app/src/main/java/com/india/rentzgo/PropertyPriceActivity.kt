@@ -12,26 +12,41 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.india.rentzgo.data.Property
-import com.india.rentzgo.data.base.Address
+import com.google.firebase.database.FirebaseDatabase
 import com.india.rentzgo.data.base.Properties
-import com.india.rentzgo.utils.BaseUtil
+import com.india.rentzgo.data.properties.IndividualRoom
 import com.india.rentzgo.utils.DBUtils
 import single.LatitudeLongitude
 import single.NearbyProperties
 import java.util.*
 
 class PropertyPriceActivity : AppCompatActivity() {
-    private lateinit var firebaseFirestore: FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_price)
         val submit = findViewById<Button>(R.id.materialButton)
+
+        var testing = findViewById<EditText>(R.id.propertyTitle)
+        println(testing)
         submit.setOnClickListener {
             setBuilder()
-            getCurrentLocationAddress()
-            DBUtils().saveProperty(getPropertyInfo(6), 6)
+//            getCurrentLocationAddress()
+            CurrentPostingProperty.uniqueId = getUniqueKey()
+
+            var individualRoom = getNewlyCreatedProperty(
+                CurrentPostingProperty.uniqueId,
+                CurrentPostingProperty.PropertyType
+            )
+            DBUtils().saveProperty(
+                individualRoom,
+                CurrentPostingProperty.uniqueId
+            )
+
+            DBUtils().savePropertyImages(
+                CurrentPostingProperty.images,
+                CurrentPostingProperty.uniqueId
+            )
+
             Handler(Looper.myLooper()!!).postDelayed({
                 val intent = Intent(this, SuccessfullyAdded::class.java)
                 startActivity(intent)
@@ -40,40 +55,59 @@ class PropertyPriceActivity : AppCompatActivity() {
         }
     }
 
-    private fun getCurrentLocationAddress() {
+    private fun getUniqueKey(): String {
+        return FirebaseDatabase.getInstance().reference.push().key.toString()
+    }
+
+    private fun getCurrentLocationAddress(): String {
         Log.i("NearbyProperties", "${NearbyProperties.list.size}")
         val geoCode = Geocoder(this, Locale.getDefault())
 
-        Log.i("Latitude and Longitude", "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}")
-        var addresses: List<android.location.Address?> =
-            geoCode.getFromLocation(LatitudeLongitude.latitude, LatitudeLongitude.longitude, 1)
+        Log.i(
+            "Latitude and Longitude",
+            "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}"
+        )
+        val address: List<android.location.Address?> =
+            geoCode.getFromLocation(26.9146122, 75.8137346, 1)
 
 //        Log.i("My address", addresses.get(0)!!.getAddressLine(0))
-        Log.i("Full address", addresses.toString())
+        Log.i("Full address", address.toString())
+        return address[0]!!.getAddressLine(0)
     }
 
-    fun getPropertyInfo(i: Int): Property {
-        firebaseFirestore = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser.uid
-        val priceView = findViewById<EditText>(R.id.priceView)
-        val properties = Property(
-            "$i",
+    private fun getNewlyCreatedProperty(propertyId: String, propertyType: String): IndividualRoom {
+        return getIndividualRoomObj(propertyId)
+    }
+
+    private fun getIndividualRoomObj(propertyId: String): IndividualRoom {
+        var ownerId = FirebaseAuth.getInstance().currentUser.uid
+        val price = findViewById<EditText>(R.id.priceView)
+
+        return IndividualRoom(
+            propertyId,
+            ownerId,
+            CurrentPostingProperty.propertyTitle,
             Properties.INDIVIDUALROOM.toString(),
             false,
-            BaseUtil().getDistanceInKilometer(
-                LatitudeLongitude.latitude, LatitudeLongitude.longitude
-            ),
-            priceView.text.toString(),
-            Date().toString(),
-            "null",
-            0,
+            price.text.toString(),
             "",
-            Address("india", "Rajasthan", "Jaipur", "Hazyavala")
+            Date().toString(),
+            2,
+            getCurrentLocationAddress(),
+            CurrentPostingProperty.maxPeople,
+            CurrentPostingProperty.furnishing,
+            CurrentPostingProperty.facing,
+            CurrentPostingProperty.totalFloors,
+            CurrentPostingProperty.currentFloor,
+            CurrentPostingProperty.parkingFacility,
+            CurrentPostingProperty.bachelorsAllowed,
+            CurrentPostingProperty.nonVegAllowed,
+            CurrentPostingProperty.drinkAndSmokingAllowed,
+            CurrentPostingProperty.propertyDescription
         )
-        return properties
     }
 
-    fun setBuilder() {
+    private fun setBuilder() {
         val builder = AlertDialog.Builder(this)
         builder.setCancelable(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -82,4 +116,5 @@ class PropertyPriceActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
     }
+
 }

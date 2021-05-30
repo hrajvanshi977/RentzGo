@@ -23,8 +23,6 @@ import androidx.viewpager.widget.ViewPager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import single.LatitudeLongitude
 import java.io.ByteArrayOutputStream
 
@@ -64,7 +62,7 @@ class MainActivityTest : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.layout_image_click, null)
         lottianimation = view.findViewById(R.id.animation)
         textView = view.findViewById(R.id.uploadHomeImageText)
-        textView.setText("Uploading more photos increases chances of renting your property!")
+        textView.text = "Uploading more photos increases chances of renting your property!"
         ImageAdapter.thisList = ArrayList()
         imageAdapter.addView(view, 0)
         imageAdapter.notifyDataSetChanged()
@@ -72,8 +70,8 @@ class MainActivityTest : AppCompatActivity() {
         imageClickButton = findViewById(R.id.camera)
         val nextButton = findViewById<ImageView>(R.id.submitHomeImages)
         nextButton.setOnClickListener {
-            if (flag != 0) {
-                val builder = android.app.AlertDialog.Builder(this)
+            if (flag == 0) {
+                val builder = android.app.AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 builder.setMessage("Please Upload atleast one photo of your property!")
                 builder.setCancelable(true)
                 builder.setPositiveButton(
@@ -82,14 +80,10 @@ class MainActivityTest : AppCompatActivity() {
                 val alert = builder.create()
                 alert!!.show()
             } else {
-                val uid = FirebaseAuth.getInstance().currentUser.uid
-                val filePath =
-                    FirebaseStorage.getInstance().getReference().child("Images").child(uid)
                 val list = imageAdapter.thisList
-
-                if (list.size != 1) {
-                    for (item in 1..(list.size - 1)) {
-                        val view = list.get(item)
+                if (list.size != 0) {
+                    for (item in 0 until list.size) {
+                        val view = list[item]
                         val imageView = view.findViewById<ImageView>(R.id.imageMine)
                         val baos = ByteArrayOutputStream()
                         imageView.invalidate()
@@ -97,7 +91,8 @@ class MainActivityTest : AppCompatActivity() {
                         val bitmap = drawable.bitmap
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
                         val array = baos.toByteArray()
-                        val uploadTask = filePath.child(item.toString()).putBytes(array)
+//                        val uploadTask = filePath.child(item.toString()).putBytes(array)
+                        CurrentPostingProperty.images.add(array)
                     }
                 }
                 val postActivityIntent = Intent(this, PostActivity::class.java)
@@ -133,11 +128,11 @@ class MainActivityTest : AppCompatActivity() {
         var linearLayout = findViewById<LinearLayout>(R.id.linearLayout)
         linearLayout.removeAllViews()
         dotCount = imageAdapter.count
-            linearLayoutList = arrayOfNulls(dotCount)
+        linearLayoutList = arrayOfNulls(dotCount)
 
         Log.i("size of the array", dotCount.toString())
 
-        for (item in 0..dotCount - 1) {
+        for (item in 0 until dotCount) {
             linearLayoutList[item] = ImageView(this)
             linearLayoutList[item]?.setImageDrawable(
                 ContextCompat.getDrawable(
@@ -173,7 +168,7 @@ class MainActivityTest : AppCompatActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                for (item in 0..dotCount - 1) {
+                for (item in 0 until dotCount) {
                     linearLayoutList[item]?.setImageDrawable(
                         ContextCompat.getDrawable(
                             applicationContext,
@@ -205,7 +200,6 @@ class MainActivityTest : AppCompatActivity() {
     }
 
     private fun openCamera() {
-//        saveCurrentLocation()
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the camera")
@@ -246,7 +240,7 @@ class MainActivityTest : AppCompatActivity() {
     ) {
         when (requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openCamera()
                 } else {
                     Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()

@@ -5,6 +5,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import com.india.rentzgo.InfiniteScrollListener
 import com.india.rentzgo.R
 import com.india.rentzgo.data.Property
 import com.india.rentzgo.data.base.Properties
+import com.india.rentzgo.data.properties.IndividualRoom
 import com.india.rentzgo.utils.BaseUtil
 import single.NearbyProperties
 
@@ -39,9 +41,9 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     lateinit var fragment: Fragment
     var container: ViewGroup? = null
     var sun = ArrayList<String>()
-    var res = ArrayList<Property?>()
+    var res = ArrayList<IndividualRoom?>()
     lateinit var inflater: LayoutInflater
-    var adapter = HomeClassAdapter(res)
+    lateinit var adapter: HomeClassAdapter
     lateinit var recyclerView: RecyclerView
     lateinit var manager: LinearLayoutManager
     var current = 0
@@ -49,7 +51,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     var total = 0
     lateinit var homeProgressBar: LottieAnimationView
     lateinit var centerHomeProgressBar: ProgressBar
-    var index: Int = 1;
+    var index: Int = 0;
 
     lateinit var locationSearch: EditText
     var isScrolling = false
@@ -57,74 +59,80 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
     private lateinit var infiniteScrollListener: InfiniteScrollListener
-
+    var root: View? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        manager = LinearLayoutManager(activity)
-        infiniteScrollListener = InfiniteScrollListener(manager, this)
-        homeProgressBar = root.findViewById(R.id.homeProgressBar)
-        centerHomeProgressBar = root.findViewById(R.id.centerHomeProgressBar)
-        homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-        recyclerView = root.findViewById(R.id.home_recycler_view) as RecyclerView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = adapter
-        recyclerView.addOnScrollListener(infiniteScrollListener)
-        infiniteScrollListener.setLoaded()
+        if (root != null) {
+            (root!!.parent as? ViewGroup)?.removeView(root)
+        } else {
+            root = inflater.inflate(R.layout.fragment_home, container, false)
+            Handler(Looper.myLooper()!!).post {
+                showHomes()
+                adapter = HomeClassAdapter(res)
+                manager = LinearLayoutManager(activity)
+                infiniteScrollListener = InfiniteScrollListener(manager, this)
+                homeProgressBar = root!!.findViewById(R.id.homeProgressBar)
+                centerHomeProgressBar = root!!.findViewById(R.id.centerHomeProgressBar)
+                homeViewModel =
+                    ViewModelProvider(this).get(HomeViewModel::class.java)
+                recyclerView = root!!.findViewById(R.id.home_recycler_view) as RecyclerView
+                recyclerView.setHasFixedSize(true)
+                recyclerView.layoutManager = manager
+                recyclerView.adapter = adapter
+                recyclerView.addOnScrollListener(infiniteScrollListener)
+                infiniteScrollListener.setLoaded()
 
 
-        if (!Places.isInitialized()) {
-            Places.initialize(requireContext(), "AIzaSyCHQzzmlMHXd9Rb9qmLKlUGXZnpIXkKQgE")
-        }
-        Places.createClient(requireContext())
-        locationSearch = root.findViewById(R.id.locationSearch)
-
-        locationSearch.setOnClickListener {
-
-            val fields = listOf(Place.Field.ID, Place.Field.NAME)
-
-            // Start the autocomplete intent.
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(requireContext())
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-        }
-
-        /*recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    isScrolling = true
+                if (!Places.isInitialized()) {
+                    Places.initialize(requireContext(), "AIzaSyCHQzzmlMHXd9Rb9qmLKlUGXZnpIXkKQgE")
                 }
-                if (recyclerView.adapter?.itemCount!! > 0) {
-                    centerHomeProgressBar.visibility = View.GONE
+                Places.createClient(requireContext())
+                locationSearch = root!!.findViewById(R.id.locationSearch)
+
+                locationSearch.setOnClickListener {
+
+                    val fields = listOf(Place.Field.ID, Place.Field.NAME)
+
+                    // Start the autocomplete intent.
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(requireContext())
+                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
                 }
             }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                if(index >= NearbyProperties.list.size) {
-                    return
+            /*recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                        isScrolling = true
+                    }
+                    if (recyclerView.adapter?.itemCount!! > 0) {
+                        centerHomeProgressBar.visibility = View.GONE
+                    }
                 }
-                current = manager.childCount
-                total = adapter.itemCount
-                scrolled = manager.findFirstVisibleItemPosition()
 
-                if (isScrolling && (current + scrolled >= total)) {
-                    homeProgressBar.visibility = View.VISIBLE
-                    Handler().postDelayed({
-//                        fetchData(SharedPreferenceHouseLists.housesLists)
-                        fetchDataTest()
-                    }, 2000)
-                    isScrolling = false
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if(index >= NearbyProperties.list.size) {
+                        return
+                    }
+                    current = manager.childCount
+                    total = adapter.itemCount
+                    scrolled = manager.findFirstVisibleItemPosition()
+
+                    if (isScrolling && (current + scrolled >= total)) {
+                        homeProgressBar.visibility = View.VISIBLE
+                        Handler().postDelayed({
+    //                        fetchData(SharedPreferenceHouseLists.housesLists)
+                            fetchDataTest()
+                        }, 2000)
+                        isScrolling = false
+                    }
                 }
-            }
-        })*/
+            })*/
 
 //        for(index in 1..1000) {
 //            Handler().postDelayed({
@@ -147,6 +155,8 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
 //                recyclerView.adapter = adapter
 //            }, 2000)
 //        }
+        }
+
         return root
     }
 
@@ -190,7 +200,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
              val geoQuery = geoFire.queryAtLocation(GeoLocation(26.8361984, 75.7729436), radius)
              geoQuery.addGeoQueryEventListener(this)
          } */
-        showHomes()
+
     }
 
     private fun showHomes() {
@@ -199,62 +209,71 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     }
 
     private fun fetchDataTest() {
-        var temp = index
+//        val executor = Executors.newSingleThreadExecutor()
+//        val handler = Handler(Looper.getMainLooper())
+//        executor.execute {
 
-        if (index >= NearbyProperties.list.size) {
-//            homeProgressBar.visibility = View.GONE
-            return
-        }
-        for (i in temp..temp + 1) {
-            index = i
-            if (index >= NearbyProperties.list.size) {
-                return
-            }
-            Log.i("In the dengerous", "${NearbyProperties.list.get(i).id}")
-            var key = NearbyProperties.list.get(i).id
-            var firebaseFirestore = FirebaseFirestore.getInstance()
+        var runnable = Runnable {
+            var temp = index
+            if (index < NearbyProperties.list.size) {
+                for (i in temp..temp + 1) {
+                    index = i
+                    if (index >= NearbyProperties.list.size) {
+                        break
+                    }
+                    Log.i("In the dangerous", "${NearbyProperties.list.get(i).id}")
+                    var key = NearbyProperties.list[i].id
+                    val distance = NearbyProperties.list[i].distance.toString()
+                    var firebaseFirestore = FirebaseFirestore.getInstance()
 
-            val path =
-                firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
-                    .document("BasicInfo")
-            path.get().addOnSuccessListener {
-                if (it.data != null) {
-                    val property: Property = it.toObject(Property::class.java) as Property
-                    res.add(property)
-                    adapter.notifyDataSetChanged()
-//                    homeProgressBar.visibility = View.GONE
-                    centerHomeProgressBar.visibility = View.GONE
+                    val path =
+                        firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
+                            .document("BasicInfo")
+                    path.get().addOnSuccessListener {
+                        if (it.data != null) {
+                            var individualRoom: IndividualRoom =
+                                it.toObject(IndividualRoom::class.java) as IndividualRoom
+                            individualRoom.setDistance(distance)
+                            var dis = individualRoom.getDistance()
+                            println("The distance is $dis")
+                            res.add(individualRoom)
+                            adapter.notifyDataSetChanged()
+                            centerHomeProgressBar.visibility = View.GONE
+                        }
+                    }.addOnFailureListener {
+                        Log.d("failed", "get failed with", it)
+                    }
                 }
-            }.addOnFailureListener {
-                Log.d("failed", "get failed with", it)
             }
         }
+        Thread(runnable).start()
+//        }
     }
 
-    private fun fetchData(list: ArrayList<String>) {
-        var i = 0
-        for (i in index..index + 5) {
-            if (i >= list.size)
-                break
-            var key = list.get(i)
-            var firebaseFirestore = FirebaseFirestore.getInstance()
-            val path =
-                firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
-                    .document("BasicInfo")
-            path.get().addOnSuccessListener {
-                if (it.data != null) {
-                    val property: Property = it.toObject(Property::class.java) as Property
-                    res.add(property)
-                    adapter.notifyDataSetChanged()
-                    homeProgressBar.visibility = View.GONE
-                    centerHomeProgressBar.visibility = View.GONE
-                }
-            }.addOnFailureListener {
-                Log.d("failed", "get failed with", it)
-            }
-        }
-        index = i
-    }
+    /* private fun fetchData(list: ArrayList<String>) {
+         var i = 0
+         for (i in index..index + 5) {
+             if (i >= list.size)
+                 break
+             var key = list.get(i)
+             var firebaseFirestore = FirebaseFirestore.getInstance()
+             val path =
+                 firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
+                     .document("BasicInfo")
+             path.get().addOnSuccessListener {
+                 if (it.data != null) {
+                     val property: Property = it.toObject(Property::class.java) as Property
+                     res.add(property)
+                     adapter.notifyDataSetChanged()
+                     homeProgressBar.visibility = View.GONE
+                     centerHomeProgressBar.visibility = View.GONE
+                 }
+             }.addOnFailureListener {
+                 Log.d("failed", "get failed with", it)
+             }
+         }
+         index = i
+     }*/
 
     var flag = true
     override fun onKeyEntered(key: String?, location: GeoLocation?) {
@@ -263,37 +282,37 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
         if (sun.size == 10) {
             val temp = sun;
             sun.clear()
-            addInRecyclerView(temp)
+//            addInRecyclerView(temp)
             sun.add(key.toString())
             flag = false
         }
     }
 
-    private fun addInRecyclerView(temp: ArrayList<String>) {
-        val runnable = Runnable {
-            synchronized(this) {
-                Thread.sleep(500)
-                for (index in 0..temp.size - 1) {
-                    var firebaseFirestore = FirebaseFirestore.getInstance()
-                    val path =
-                        firebaseFirestore.collection("Properties/${temp.get(index)}/${Properties.INDIVIDUALROOM}")
-                            .document("BasicInfo")
-                    path.get().addOnSuccessListener {
-                        if (it.data != null) {
-                            val property: Property = it.toObject(Property::class.java) as Property
-                            res.add(property)
-                            centerHomeProgressBar.visibility = View.GONE
-                            adapter.notifyDataSetChanged()
-                        }
-                    }.addOnFailureListener {
-                        Log.d("failed", "get failed with", it)
-                    }
-                }
-            }
-        }
-        var thread = Thread(runnable)
-        thread.start()
-    }
+    /*  private fun addInRecyclerView(temp: ArrayList<String>) {
+          val runnable = Runnable {
+              synchronized(this) {
+                  Thread.sleep(500)
+                  for (index in 0..temp.size - 1) {
+                      var firebaseFirestore = FirebaseFirestore.getInstance()
+                      val path =
+                          firebaseFirestore.collection("Properties/${temp.get(index)}/${Properties.INDIVIDUALROOM}")
+                              .document("BasicInfo")
+                      path.get().addOnSuccessListener {
+                          if (it.data != null) {
+                              val property: Property = it.toObject(Property::class.java) as Property
+                              res.add(property)
+                              centerHomeProgressBar.visibility = View.GONE
+                              adapter.notifyDataSetChanged()
+                          }
+                      }.addOnFailureListener {
+                          Log.d("failed", "get failed with", it)
+                      }
+                  }
+              }
+          }
+          var thread = Thread(runnable)
+          thread.start()
+      } */
 
     override fun onKeyExited(key: String?) {
     }
@@ -317,7 +336,8 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                     .document("BasicInfo")
             path.get().addOnSuccessListener {
                 if (it.data != null) {
-                    val property: Property = it.toObject(Property::class.java) as Property
+                    val property: IndividualRoom =
+                        it.toObject(IndividualRoom::class.java) as IndividualRoom
                     adapter.removeNull()
                     res.add(property)
                     res.add(property)

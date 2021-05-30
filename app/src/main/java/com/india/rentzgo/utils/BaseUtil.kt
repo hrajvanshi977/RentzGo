@@ -104,4 +104,5 @@ class BaseUtil : AppCompatActivity() {
     fun sortByDistance() {
         Collections.sort(NearbyProperties.list, SortByDistance())
     }
+
 }

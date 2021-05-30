@@ -15,13 +15,50 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:maxHeight="300dp"
-                android:src="@drawable/house_image" />
+                android:layout_height="match_parent">
+
+                <com.av.smoothviewpager.Smoolider.SmoothViewpager
+                    android:id="@+id/homeImagesViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_alignParentBottom="true"
+                    android:clipToPadding="false"
+                    android:paddingRight="10dp" />
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:layout_marginTop="370dp">-->
+
+                <!--                    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator-->
+                <!--                        android:id="@+id/tablayout"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_alignParentBottom="true"-->
+                <!--                        android:layout_centerHorizontal="true"-->
+                <!--                        app:dotsColor="@color/primary_color"-->
+                <!--                        app:dotsCornerRadius="8dp"-->
+                <!--                        app:dotsSize="8dp"-->
+                <!--                        app:dotsSpacing="2dp"-->
+                <!--                        app:dotsStrokeColor="@color/white"-->
+                <!--                        app:dotsStrokeWidth="2dp"-->
+                <!--                        android:defaultFocusHighlightEnabled="true"-->
+                <!--                        android:scrollbarAlwaysDrawHorizontalTrack="true"/>-->
+                <!--                </LinearLayout>-->
+
+            </RelativeLayout>
+
+
+            <!--            <ImageView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:adjustViewBounds="true"-->
+            <!--                android:maxHeight="300dp"-->
+            <!--                android:src="@drawable/house_image" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,6 +76,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
+                            android:id="@+id/priceView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
@@ -48,6 +86,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/distance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -65,6 +104,7 @@
 
 
                 <TextView
+                    android:id="@+id/propertyTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
@@ -73,6 +113,7 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/propertyLocationAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
@@ -117,6 +158,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/propertyTypes"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -141,6 +183,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/maxPeople"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -165,6 +208,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/furnishing"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -189,6 +233,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/facing"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -213,6 +258,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/totalFloors"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -237,6 +283,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/currentFloor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -261,6 +308,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/parkingFacility"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -285,6 +333,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/bachelorsAllowed"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -309,6 +358,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/nonVegAllowed"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -333,6 +383,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/drinkAndSmokingAllowed"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -365,6 +416,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/propertyDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="semi furnished individual room for bechelors in very good condition. parking facility is available. mess facilty is also available"
@@ -375,32 +427,67 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="80dp"/>
-
-
+                android:layout_height="80dp" />
         </LinearLayout>
     </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
             android:background="@color/primary_color"
-            android:text="chat" />
+            android:outlineAmbientShadowColor="@color/gray"
+            android:outlineSpotShadowColor="@color/gray"
+            app:cardElevation="3dp">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:background="@color/primary_color"
-            android:text="Send Request" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_button"
+                    android:text="Chat"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_button"
+                    android:text="Send Request"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/image_white" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_6217" />
 </RelativeLayout>

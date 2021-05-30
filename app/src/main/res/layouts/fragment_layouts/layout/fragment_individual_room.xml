@@ -34,6 +34,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/maxPeople"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -65,6 +66,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/totalFloors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -75,6 +77,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/currentFloor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -85,7 +88,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/parking_facility"
+                android:id="@+id/parkingFacility"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
@@ -96,7 +99,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/bachelors_allowed"
+                android:id="@+id/bachelorsAllowed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -107,7 +110,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/non_veg_allowed"
+                android:id="@+id/nonVegAllowed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -117,7 +120,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/drink_smoke_allowed"
+                android:id="@+id/drinkAndSmokingAllowed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -127,6 +130,7 @@
                 android:textColor="@color/gray" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/propertyDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"

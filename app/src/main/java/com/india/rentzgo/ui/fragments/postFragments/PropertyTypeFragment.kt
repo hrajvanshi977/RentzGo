@@ -9,8 +9,10 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
+import com.india.rentzgo.CurrentPostingProperty
 import com.india.rentzgo.MainActivityTest
 import com.india.rentzgo.R
+import com.india.rentzgo.data.base.Properties
 
 class PropertyTypeFragment : ListFragment() {
     override fun onCreateView(
@@ -33,6 +35,7 @@ class PropertyTypeFragment : ListFragment() {
 
     override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
         if (position == 0) {
+            CurrentPostingProperty.PropertyType = Properties.INDIVIDUALROOM.toString()
 //            goForIndividualRooms(IndividualRoomFragment(), "flag")
 //            PostActivity().goToUploadImageAcivity()
             val intent = Intent(activity, MainActivityTest::class.java)
@@ -55,6 +58,7 @@ class PropertyTypeFragment : ListFragment() {
     }
 
     fun goForIndividualRooms(propertType: Fragment, tag: String) {
+        CurrentPostingProperty.PropertyType = Properties.INDIVIDUALROOM.toString()
         val fragmentTransaction = fragmentManager?.beginTransaction()
         fragmentTransaction?.setCustomAnimations(
             R.anim.enter_from_right,

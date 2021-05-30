@@ -1,45 +1,50 @@
 package com.india.rentzgo.data
 
-import com.india.rentzgo.data.base.Address
-
-class Property {
+open class Property {
+    private lateinit var propertyId: String
     private lateinit var ownerId: String
+    private lateinit var propertyTitle: String
     private lateinit var propertyType: String
     private var isRented: Boolean = false
-    private var distanceInKilometer: Int = 0
     private lateinit var price: String
+    private lateinit var distance: String
     private lateinit var propertyPostedDate: String
-    private lateinit var propertyRentedDate: String
     private var propertyStars: Int = 0
-    private lateinit var rentedBy: String
-    private lateinit var address: Address
-
+    private lateinit var address: String
 
     constructor(
+        propertyId: String,
         ownerId: String,
+        propertyTitle: String,
         propertyType: String,
         isRented: Boolean,
-        distanceInKilometer: Int,
         price: String,
+        distance: String,
         propertyPostedDate: String,
-        propertyRentedDate: String,
         propertyStars: Int,
-        rentedBy: String,
-        address: Address
+        address: String
     ) {
+        this.propertyId = propertyId
         this.ownerId = ownerId
+        this.propertyTitle = propertyTitle
         this.propertyType = propertyType
         this.isRented = isRented
-        this.distanceInKilometer = distanceInKilometer
         this.price = price
+        this.distance = distance
         this.propertyPostedDate = propertyPostedDate
-        this.propertyRentedDate = propertyRentedDate
         this.propertyStars = propertyStars
-        this.rentedBy = rentedBy
         this.address = address
     }
 
     constructor() {}
+
+    fun getPropertyId(): String? {
+        return propertyId
+    }
+
+    fun setPropertyId(propertyId: String?) {
+        this.propertyId = propertyId!!
+    }
 
     fun getOwnerId(): String? {
         return ownerId
@@ -73,14 +78,6 @@ class Property {
         this.propertyPostedDate = propertyPostedDate
     }
 
-    fun getPropertyRentedDate(): String {
-        return propertyRentedDate
-    }
-
-    fun setPropertyRentedDate(propertyRentedDate: String) {
-        this.propertyRentedDate = propertyRentedDate
-    }
-
     fun getPropertyStars(): Int {
         return propertyStars
     }
@@ -89,19 +86,11 @@ class Property {
         this.propertyStars = propertyStars
     }
 
-    fun getRentedBy(): String? {
-        return rentedBy
-    }
-
-    fun setRentedBy(rentedBy: String?) {
-        this.rentedBy = rentedBy!!
-    }
-
-    fun getAddress(): Address {
+    fun getAddress(): String {
         return address
     }
 
-    fun setAddress(address: Address) {
+    fun setAddress(address: String) {
         this.address = address
     }
 
@@ -113,12 +102,19 @@ class Property {
         this.price = price
     }
 
-    fun getDistanceInKilometer(): Int {
-        return distanceInKilometer
+    fun getPropertyTitle(): String {
+        return propertyTitle
     }
 
-    fun setDistanceInKilometer(distanceInKilometer: Int) {
-        this.distanceInKilometer = distanceInKilometer
+    fun setPropertyTitle(propertyTitle: String) {
+        this.propertyTitle = propertyTitle
     }
 
+    fun getDistance(): String {
+        return distance
+    }
+
+    fun setDistance(distance: String) {
+        this.distance = distance
+    }
 }

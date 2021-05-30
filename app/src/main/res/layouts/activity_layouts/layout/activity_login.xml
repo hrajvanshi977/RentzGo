@@ -138,7 +138,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:lottie_loop="true"
                 app:lottie_autoPlay="true"
-                app:lottie_rawRes="@raw/loading_drop"/>
+                app:lottie_rawRes="@raw/loading"/>
 
             <TextView
                 android:id="@+id/signInButtonTextview"

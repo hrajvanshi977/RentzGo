@@ -4,14 +4,18 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.india.rentzgo.data.Property
+import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.india.rentzgo.data.properties.IndividualRoom
+import com.squareup.picasso.Picasso
 
 
-class HomeClassAdapter(private var mHouse: ArrayList<Property?>) :
+class HomeClassAdapter(private var mHouse: ArrayList<IndividualRoom?>) :
     RecyclerView.Adapter<HomeClassAdapter.MyViewHolder>() {
     private val VIEW_TYPE_ITEM: Int = 1
     private val VIEW_TYPE_LOADING: Int = 0
@@ -22,18 +26,21 @@ class HomeClassAdapter(private var mHouse: ArrayList<Property?>) :
 //        val distance: TextView = listItemView.findViewById(R.id.distance)
 //        val rate: TextView = listItemView.findViewById(R.id.rate)
 
-        fun bind(item: Property) {
+        fun bind(item: IndividualRoom) {
             listItemView.setOnClickListener {
                 Toast.makeText(listItemView.context, "went to another activity", Toast.LENGTH_SHORT)
                     .show()
                 val intent = Intent(listItemView.context, ShowPropertyInformation::class.java)
+                val gson = Gson()
+                val myJson = gson.toJson(item)
+                intent.putExtra("PROPERTYID", myJson)
                 ContextCompat.startActivity(listItemView.context, intent, null)
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (mHouse.get(position) != null)
+        if (mHouse[position] != null)
             return VIEW_TYPE_ITEM
         else
             return VIEW_TYPE_LOADING
@@ -43,7 +50,7 @@ class HomeClassAdapter(private var mHouse: ArrayList<Property?>) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): HomeClassAdapter.MyViewHolder {
+    ): MyViewHolder {
         if (viewType == VIEW_TYPE_ITEM) {
             var inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.layout_home, parent, false)
@@ -59,12 +66,22 @@ class HomeClassAdapter(private var mHouse: ArrayList<Property?>) :
         val demo = mHouse.get(position)
         if (demo != null) {
             val distance = holder.listItemView.findViewById<TextView>(R.id.distance)
-            distance.setText("${demo!!.getDistanceInKilometer()}")
+            distance.text = "5km"
             val rate = holder.listItemView.findViewById<TextView>(R.id.rate)
             rate.text = demo!!.getPrice()
+            loadImage(holder, demo.getPropertyId())
             holder.bind(demo)
         } else {
             return
+        }
+    }
+
+    private fun loadImage(holder: MyViewHolder, propertyId: String?) {
+        val propertyImage = holder.listItemView.findViewById<ImageView>(R.id.propertyImage)
+        val filePath =
+            FirebaseStorage.getInstance().reference.child("Images").child(propertyId!!).child("0")
+        filePath.downloadUrl.addOnSuccessListener {
+            Picasso.get().load(it).into(propertyImage)
         }
     }
 

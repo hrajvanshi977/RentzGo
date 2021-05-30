@@ -1,7 +1,6 @@
 package com.india.rentzgo
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
@@ -18,9 +17,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.india.rentzgo.data.SharedPreferenceHouseLists
 import com.india.rentzgo.ui.doPost.PostFragment
 import com.india.rentzgo.ui.home.HomeFragment
 import com.india.rentzgo.ui.myads.MyAdsFragment
@@ -33,7 +29,6 @@ import kotlin.collections.ArrayList
 
 
 class HousesLists : AppCompatActivity() {
-
     lateinit var firebaseAuth: FirebaseAuth
     var list = ArrayList<String>()
     private val homeFragment = HomeFragment()
@@ -42,7 +37,6 @@ class HousesLists : AppCompatActivity() {
     private val notificationFragment = NotificationFragment()
     private val profileFragment = ProfileFragment()
     private val fragmentManager = supportFragmentManager
-    var isFound = false;
     private var activeFragment: Fragment = homeFragment
 
     lateinit var locationSearch: EditText
@@ -63,40 +57,46 @@ class HousesLists : AppCompatActivity() {
         setContentView(R.layout.activity_houses_lists)
         println("size of the nearby list is ${NearbyProperties.list.size}")
 
-
-        var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
+       /* var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
         var gson = Gson()
         var json: String? = sharedPreferences.getString("Houses", "")
         var type = object : TypeToken<ArrayList<String?>?>() {}.type
         var list: ArrayList<String> = gson.fromJson(json, type)
         SharedPreferenceHouseLists.housesLists = list
-        loadHouses()
+        */
+        Thread {
+            loadHouses()
+        }.start()
         Places.initialize(this, "AIzaSyCHQzzmlMHXd9Rb9qmLKlUGXZnpIXkKQgE")
 
-//        locationSearch = findViewById(R.id.locationSearch)
-//
-//        locationSearch.setOnClickListener {
-//            var list =
-//                Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME) as ArrayList<Place.Field>
-//
-//            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, list).build(this)
-//
-//            startActivityForResult(intent, 100)
-//
-//        }
+        /*locationSearch = findViewById(R.id.locationSearch)
+
+        locationSearch.setOnClickListener {
+            var list =
+                Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME) as ArrayList<Place.Field>
+
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, list).build(this)
+
+            startActivityForResult(intent, 100)
+
+        }
+         */
         getCurrentLocationAddress()
         val intentT = intent
         if (intentT.getStringExtra("MyAds").equals("1")) {
             activeFragment = myAdsFragment
         }
 
-//        if (intentT.getStringExtra("MyAds").equals("1")) {
-//            fragmentManager.beginTransaction().hide(activeFragment).show(homeFragment)
-//                .commit()
-//            activeFragment = myAdsFragment
-//        }
-        showFragment(activeFragment)
-        initListeners()
+        /* if (intentT.getStringExtra("MyAds").equals("1")) {
+        fragmentManager.beginTransaction().hide(activeFragment).show(homeFragment)
+            .commit()
+        activeFragment = myAdsFragment
+    }
+   */
+        Thread {
+            showFragment(activeFragment)
+            initListeners()
+        }.start()
 
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -177,7 +177,6 @@ class HousesLists : AppCompatActivity() {
         }.commit()
     }
 
-
     private fun addFragment() {
         fragmentManager.beginTransaction().apply {
             add(R.id.nav_host_fragment, homeFragment, getString(R.string.title_home)).show(
@@ -203,20 +202,18 @@ class HousesLists : AppCompatActivity() {
             )
         }.commit()
     }
+    /*
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if(requestCode == 100 && resultCode == RESULT_OK) {
-//            val place = Autocomplete.getPlaceFromIntent(data!!)
-//
-//        }
-//    }
+        if(requestCode == 100 && resultCode == RESULT_OK) {
+            val place = Autocomplete.getPlaceFromIntent(data!!)
 
+        }
+    }*/
 
     private fun initListeners() {
         var bottomViewNavigation = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-
         bottomViewNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_home -> {
@@ -245,7 +242,8 @@ class HousesLists : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_profile -> {
-                    fragmentManager.beginTransaction().hide(activeFragment).show(profileFragment)
+                    fragmentManager.beginTransaction().hide(activeFragment)
+                        .show(profileFragment)
                         .commit()
                     activeFragment = profileFragment
                     true
@@ -264,7 +262,10 @@ class HousesLists : AppCompatActivity() {
     private fun getCurrentLocationAddress() {
         val geoCode = Geocoder(this, Locale.getDefault())
 
-        Log.i("Latitude and Longitude", "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}")
+        Log.i(
+            "Latitude and Longitude",
+            "${LatitudeLongitude.latitude}, ${LatitudeLongitude.longitude}"
+        )
         var addresses: List<android.location.Address?> =
             geoCode.getFromLocation(28.659576, 77.172284, 1)
 
