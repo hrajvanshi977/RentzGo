@@ -1,6 +1,8 @@
 package com.india.rentzgo
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.india.rentzgo.data.properties.IndividualRoom
@@ -23,9 +26,8 @@ class HomeClassAdapter(private var mHouse: ArrayList<IndividualRoom?>) :
     open class MyViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val listItemView = listItemView
 
-//        val distance: TextView = listItemView.findViewById(R.id.distance)
+        //        val distance: TextView = listItemView.findViewById(R.id.distance)
 //        val rate: TextView = listItemView.findViewById(R.id.rate)
-
         fun bind(item: IndividualRoom) {
             listItemView.setOnClickListener {
                 Toast.makeText(listItemView.context, "went to another activity", Toast.LENGTH_SHORT)
@@ -63,7 +65,7 @@ class HomeClassAdapter(private var mHouse: ArrayList<IndividualRoom?>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val demo = mHouse.get(position)
+        val demo = mHouse[position]
         if (demo != null) {
             val distance = holder.listItemView.findViewById<TextView>(R.id.distance)
             distance.text = "5km"
@@ -78,10 +80,14 @@ class HomeClassAdapter(private var mHouse: ArrayList<IndividualRoom?>) :
 
     private fun loadImage(holder: MyViewHolder, propertyId: String?) {
         val propertyImage = holder.listItemView.findViewById<ImageView>(R.id.propertyImage)
+        val progressbar = holder.listItemView.findViewById<LottieAnimationView>(R.id.progressbar)
         val filePath =
             FirebaseStorage.getInstance().reference.child("Images").child(propertyId!!).child("0")
         filePath.downloadUrl.addOnSuccessListener {
             Picasso.get().load(it).into(propertyImage)
+            Handler(Looper.myLooper()!!).postDelayed({
+                progressbar.visibility = View.GONE
+            }, 2000)
         }
     }
 
@@ -91,15 +97,11 @@ class HomeClassAdapter(private var mHouse: ArrayList<IndividualRoom?>) :
         return mHouse.size
     }
 
-    fun addNulData() {
+    fun addNullData() {
         mHouse.add(null)
-        notifyItemInserted(mHouse.size - 1)
     }
 
-    fun removeNull() {
+    fun removeNullData() {
         mHouse.removeAt(mHouse.size - 1)
-        notifyItemRemoved(mHouse.size)
     }
-
-
 }

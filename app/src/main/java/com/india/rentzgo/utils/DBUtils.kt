@@ -45,11 +45,11 @@ class DBUtils : AppCompatActivity() {
         Log.i("Here->", "$address")
         firebaseFirestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser.uid
-        val countryName = address.get(0)!!.countryName
-        val adminArea = address.get(0)!!.adminArea
-        val subAdminArea = address.get(0)!!.subAdminArea
+        val countryName = address[0]!!.countryName
+        val adminArea = address[0]!!.adminArea
+        val subAdminArea = address[0]!!.subAdminArea
 
-        Log.i("Info", "${countryName}, ${adminArea}, ${subAdminArea}")
+        Log.i("Info", "${countryName}, ${adminArea}, $subAdminArea")
         val path =
             firebaseFirestore.collection("Properties/${propertyId}/${Properties.INDIVIDUALROOM}")
                 .document("BasicInfo")
@@ -97,7 +97,7 @@ class DBUtils : AppCompatActivity() {
         val filePath =
             FirebaseStorage.getInstance().reference.child("Images").child(propertyId)
         for (index in 0 until images.size) {
-            val uploadTask = filePath.child(index.toString()).putBytes(images.get(index))
+            val uploadTask = filePath.child(index.toString()).putBytes(images[index])
         }
         return true
     }

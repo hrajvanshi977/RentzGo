@@ -51,10 +51,10 @@ class MainActivity : AppCompatActivity(), LocationListener {
     }
 
     private fun getData() {
+        NearbyProperties.clearAllProperties()
         firebaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.i("Snapshot", "$snapshot")
-
                 for (datas in snapshot.children) {
                     val latitude = datas.child("l").child("0").value.toString()
                     val longitude = datas.child("l").child("1").value.toString()
@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
                     val to = LatLng(latitude.toDouble(), longitude.toDouble())
 
                     Location.distanceBetween(26.815262, 75.7677224, 26.9373175, 75.8133372, result)
-                    NearbyProperties.clearAllProperties()
                     NearbyProperties.list.add(PropertiesAndDistance(result[0], id))
                     Log.i("distance", "${latitude.toDouble()}, ${result[0]}")
                 }

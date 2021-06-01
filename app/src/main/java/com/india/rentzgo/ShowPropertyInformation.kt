@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -14,11 +15,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.gson.Gson
 import com.india.rentzgo.data.properties.IndividualRoom
+import com.like.LikeButton
 import com.squareup.picasso.Picasso
 
-
 class ShowPropertyInformation : AppCompatActivity() {
-
+    private lateinit var viewPagerProgressBar: ProgressBar
+    private lateinit var likeButton: LikeButton
+    private lateinit var goBack: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Handler(Looper.myLooper()!!).postDelayed({
@@ -27,27 +30,48 @@ class ShowPropertyInformation : AppCompatActivity() {
                 gson.fromJson(intent.getStringExtra("PROPERTYID"), IndividualRoom::class.java)
             initializeAllFields(property)
             var imageView = findViewById<ImageView>(R.id.image)
-            var progressBar = findViewById<LottieAnimationView>(R.id.progressBar)
             imageView.layoutParams.height = 0
             imageView.layoutParams.width = 0
-            progressBar.visibility = View.GONE
+            var middleProgressBar = findViewById<LottieAnimationView>(R.id.middleProgressBar)
+            middleProgressBar.visibility = View.GONE
             loadImagesInAdapter(property.getPropertyId())
         }, 1000)
         setContentView(R.layout.activity_show_property_information)
+        initializeAllFields()
+        onClickProgress()
         var viewPager = findViewById<SmoothViewpager>(R.id.homeImagesViewPager)
         viewPager.adapter = PropertyImagesAdapter
 //        val tableLayout = findViewById<WormDotsIndicator>(R.id.tablayout)
 //        tableLayout.setViewPager(viewPager)
     }
 
+    private fun onClickProgress() {
+        likeButton.setOnClickListener {
+            if(!likeButton.isLiked) {
+                likeButton.isLiked = true
+            } else{
+                likeButton.isLiked = false
+            }
+        }
+        goBack.setOnClickListener {
+            finish()
+        }
+    }
+
     private fun loadImagesInAdapter(propertyId: String?) {
         val reference =
-            FirebaseStorage.getInstance().reference.child("Images").child("-MaqvSec9B2phfMhuTd4")
+            FirebaseStorage.getInstance().reference.child("Images").child(propertyId!!)
         reference.listAll().addOnSuccessListener {
             val list: ListResult? = it
-            addImagesInViewpager(list, "-MaqvSec9B2phfMhuTd4")
+            addImagesInViewpager(list, propertyId!!)
         }.addOnFailureListener {
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        PropertyImagesAdapter.thisList.clear()
+        PropertyImagesAdapter.notifyDataSetChanged()
     }
 
     private fun addImagesInViewpager(list: ListResult?, s: String) {
@@ -62,12 +86,20 @@ class ShowPropertyInformation : AppCompatActivity() {
                     .child(s).child("$index")
             filePath.downloadUrl.addOnSuccessListener {
                 Picasso.get().load(it).into(propertyImage)
+                Handler(Looper.myLooper()!!).postDelayed({
+                    viewPagerProgressBar.visibility = View.GONE
+                }, 1500)
             }
             PropertyImagesAdapter.thisList.add(view)
             PropertyImagesAdapter.notifyDataSetChanged()
         }
     }
 
+    private fun initializeAllFields() {
+        likeButton = findViewById(R.id.like)
+        viewPagerProgressBar = findViewById(R.id.viewPagerProgressBar)
+        goBack = findViewById(R.id.goBack)
+    }
     private fun initializeAllFields(property: IndividualRoom) {
         var priceView = findViewById<TextView>(R.id.priceView)
         priceView.text = "₹ ${property.getPrice()}"

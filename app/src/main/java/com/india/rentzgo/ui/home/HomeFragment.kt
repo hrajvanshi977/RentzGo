@@ -2,7 +2,11 @@ package com.india.rentzgo.ui.home
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,6 +29,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.india.rentzgo.HomeClassAdapter
 import com.india.rentzgo.InfiniteScrollListener
@@ -49,9 +54,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     var current = 0
     var scrolled = 0
     var total = 0
-    lateinit var homeProgressBar: LottieAnimationView
     lateinit var centerHomeProgressBar: ProgressBar
-    var index: Int = 0;
 
     lateinit var locationSearch: EditText
     var isScrolling = false
@@ -70,11 +73,10 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
         } else {
             root = inflater.inflate(R.layout.fragment_home, container, false)
             Handler(Looper.myLooper()!!).post {
-                showHomes()
                 adapter = HomeClassAdapter(res)
+                Log.d(TAG, "onCreateView: ${res.size}")
                 manager = LinearLayoutManager(activity)
                 infiniteScrollListener = InfiniteScrollListener(manager, this)
-                homeProgressBar = root!!.findViewById(R.id.homeProgressBar)
                 centerHomeProgressBar = root!!.findViewById(R.id.centerHomeProgressBar)
                 homeViewModel =
                     ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -83,6 +85,8 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                 recyclerView.layoutManager = manager
                 recyclerView.adapter = adapter
                 recyclerView.addOnScrollListener(infiniteScrollListener)
+                NearbyProperties.index = 0     //clearing the index so that we can fill recycler view from beginning everytime when we enter in home
+                showHomes()
                 infiniteScrollListener.setLoaded()
 
 
@@ -97,8 +101,9 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                     val fields = listOf(Place.Field.ID, Place.Field.NAME)
 
                     // Start the autocomplete intent.
-                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                        .build(requireContext())
+                    val intent =
+                        Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                            .build(requireContext())
                     startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
                 }
             }
@@ -160,6 +165,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
         return root
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             when (resultCode) {
@@ -200,55 +206,90 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
              val geoQuery = geoFire.queryAtLocation(GeoLocation(26.8361984, 75.7729436), radius)
              geoQuery.addGeoQueryEventListener(this)
          } */
+        var no_internet_access_animation =
+            root!!.findViewById<LottieAnimationView>(R.id.no_internet_access_animation)
+        if (!isInternetAvailable(requireContext())) {
+            no_internet_access_animation.visibility = View.VISIBLE
+        } else {
+            no_internet_access_animation.visibility = View.GONE
+        }
+    }
 
+    private fun isInternetAvailable(context: Context): Boolean {
+        var result = false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val actNw =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+            result = when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.run {
+                connectivityManager.activeNetworkInfo?.run {
+                    result = when (type) {
+                        ConnectivityManager.TYPE_WIFI -> true
+                        ConnectivityManager.TYPE_MOBILE -> true
+                        ConnectivityManager.TYPE_ETHERNET -> true
+                        else -> false
+                    }
+
+                }
+            }
+        }
+
+        return result
     }
 
     private fun showHomes() {
         BaseUtil().sortByDistance()
-        fetchDataTest()
+        onLoadMore()
     }
 
-    private fun fetchDataTest() {
-//        val executor = Executors.newSingleThreadExecutor()
-//        val handler = Handler(Looper.getMainLooper())
-//        executor.execute {
+    /* private fun fetchDataTest() {
+         var runnable = Runnable {
+             var temp = NearbyProperties.index
+             println("size of the list is ${NearbyProperties.list.size}")
+             if (NearbyProperties.index < NearbyProperties.list.size) {
+                 for (i in temp..temp + 1) {
+                     NearbyProperties.index = i+1
+                     if (i  >= NearbyProperties.list.size) {
+                         break
+                     }
+                     Log.i("In the dangerous", "${NearbyProperties.list.get(i).id}")
+                     val key = NearbyProperties.list[i].id
+                     val distance = NearbyProperties.list[i].distance.toString()
+                     var firebaseFirestore = FirebaseFirestore.getInstance()
 
-        var runnable = Runnable {
-            var temp = index
-            if (index < NearbyProperties.list.size) {
-                for (i in temp..temp + 1) {
-                    index = i
-                    if (index >= NearbyProperties.list.size) {
-                        break
-                    }
-                    Log.i("In the dangerous", "${NearbyProperties.list.get(i).id}")
-                    var key = NearbyProperties.list[i].id
-                    val distance = NearbyProperties.list[i].distance.toString()
-                    var firebaseFirestore = FirebaseFirestore.getInstance()
-
-                    val path =
-                        firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
-                            .document("BasicInfo")
-                    path.get().addOnSuccessListener {
-                        if (it.data != null) {
-                            var individualRoom: IndividualRoom =
-                                it.toObject(IndividualRoom::class.java) as IndividualRoom
-                            individualRoom.setDistance(distance)
-                            var dis = individualRoom.getDistance()
-                            println("The distance is $dis")
-                            res.add(individualRoom)
-                            adapter.notifyDataSetChanged()
-                            centerHomeProgressBar.visibility = View.GONE
-                        }
-                    }.addOnFailureListener {
-                        Log.d("failed", "get failed with", it)
-                    }
-                }
-            }
-        }
-        Thread(runnable).start()
-//        }
-    }
+                     val path =
+                         firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
+                             .document("BasicInfo")
+                     path.get().addOnSuccessListener {
+                         if (it.data != null) {
+                             var individualRoom: IndividualRoom =
+                                 it.toObject(IndividualRoom::class.java) as IndividualRoom
+                             individualRoom.setDistance(distance)
+                             var dis = individualRoom.getDistance()
+                             println("The distance is $dis")
+                             res.add(individualRoom)
+                             adapter.notifyDataSetChanged()
+                             centerHomeProgressBar.visibility = View.GONE
+                         } else {
+                         }
+                     }.addOnFailureListener {
+                         Log.d("failed", "get failed with", it)
+                     }
+                 }
+             }
+         }
+         Thread(runnable).start()
+     }
+     */
 
     /* private fun fetchData(list: ArrayList<String>) {
          var i = 0
@@ -328,33 +369,64 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     }
 
     override fun onLoadMore() {
-        adapter.addNulData()
-        Handler().postDelayed({
-            var firebaseFirestore = FirebaseFirestore.getInstance()
-            val path =
-                firebaseFirestore.collection("Properties/${1}/${Properties.INDIVIDUALROOM}")
-                    .document("BasicInfo")
+        Log.d(TAG, "onLoadMore size : ${NearbyProperties.list.size}")
+        Log.d(TAG, "onLoadMore index: ${NearbyProperties.index}")
+        adapter.addNullData()
+        recyclerView.post {
+            recyclerView.adapter!!.notifyDataSetChanged()
+        }
+        val propertiesTemp = ArrayList<FetchedProperties>()
+        var runnable = Runnable {
+            var temp = NearbyProperties.index
+            println("size of the list is ${NearbyProperties.list.size}")
+            if (NearbyProperties.index < NearbyProperties.list.size) {
+                for (i in temp..temp + 1) {
+                    NearbyProperties.index = i + 1
+                    if (i >= NearbyProperties.list.size)
+                        break
+                    Log.i("In the dangerous", "${NearbyProperties.list.get(i).id}")
+                    val key = NearbyProperties.list[i].id
+                    val distance = NearbyProperties.list[i].distance.toString()
+                    var firebaseFirestore = FirebaseFirestore.getInstance()
+                    val path =
+                        firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
+                            .document("BasicInfo")
+                    propertiesTemp.add(FetchedProperties(path, distance))
+                    Thread.sleep(500)
+                }
+            }
+            addPropertyIntoRecyclerView(propertiesTemp)
+        }
+        Thread(runnable).start()
+    }
+
+    private fun addPropertyIntoRecyclerView(propertiesTemp: ArrayList<FetchedProperties>) {
+        adapter.removeNullData()
+        recyclerView.post {
+            recyclerView.adapter!!.notifyDataSetChanged()
+        }
+        for(index in 0 until propertiesTemp.size) {
+            var path = propertiesTemp[index].reference
+            var distance = propertiesTemp[index].distance
             path.get().addOnSuccessListener {
                 if (it.data != null) {
-                    val property: IndividualRoom =
+                    var individualRoom: IndividualRoom =
                         it.toObject(IndividualRoom::class.java) as IndividualRoom
-                    adapter.removeNull()
-                    res.add(property)
-                    res.add(property)
-                    res.add(property)
-                    res.add(property)
-                    res.add(property)
+                    individualRoom.setDistance(distance)
+                    var dis = individualRoom.getDistance()
+                    println("The distance is $dis")
+                    res.add(individualRoom)
                     adapter.notifyDataSetChanged()
-                    infiniteScrollListener.setLoaded();
-//                    homeProgressBar.visibility = View.GONE
                     centerHomeProgressBar.visibility = View.GONE
                 }
             }.addOnFailureListener {
                 Log.d("failed", "get failed with", it)
             }
-        }, 1500)
+        }
     }
 }
+
+class FetchedProperties(var reference: DocumentReference, var distance: String)
 
 
 interface MyCallback {

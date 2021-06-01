@@ -82,6 +82,7 @@ class MainActivityTest : AppCompatActivity() {
             } else {
                 val list = imageAdapter.thisList
                 if (list.size != 0) {
+                    CurrentPostingProperty.images.clear()
                     for (item in 0 until list.size) {
                         val view = list[item]
                         val imageView = view.findViewById<ImageView>(R.id.imageMine)
