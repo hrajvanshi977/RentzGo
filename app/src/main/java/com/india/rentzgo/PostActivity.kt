@@ -29,7 +29,7 @@ class PostActivity : AppCompatActivity() {
         if (extraString.equals("1"))
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
 
-        extraString = intentT.getStringExtra("afterSuccess");
+        extraString = intentT.getStringExtra("afterSuccess")
         if (extraString.equals("1")) {
             val intent = Intent(this, HousesLists::class.java)
             startActivity(intent)
@@ -41,8 +41,8 @@ class PostActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun goForIndividualRoom() {
-        CurrentPostingProperty.PropertyType = Properties.INDIVIDUALROOM.toString()
+    private fun goForIndividualRoom() {
+        CurrentPostingPropertyDetails.PropertyType = Properties.INDIVIDUALROOM.toString()
         val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
             .add(R.id.post_fragment_container, IndividualRoomFragment())

@@ -1,6 +1,7 @@
 package com.india.rentzgo.data
 
 open class Property {
+    private lateinit var coverPhoto: String
     private lateinit var propertyId: String
     private lateinit var ownerId: String
     private lateinit var propertyTitle: String
@@ -13,6 +14,7 @@ open class Property {
     private lateinit var address: String
 
     constructor(
+        coverPhoto: String,
         propertyId: String,
         ownerId: String,
         propertyTitle: String,
@@ -24,6 +26,7 @@ open class Property {
         propertyStars: Int,
         address: String
     ) {
+        this.coverPhoto = coverPhoto
         this.propertyId = propertyId
         this.ownerId = ownerId
         this.propertyTitle = propertyTitle
@@ -116,5 +119,13 @@ open class Property {
 
     fun setDistance(distance: String) {
         this.distance = distance
+    }
+
+    fun getCoverPhoto(): String {
+        return coverPhoto
+    }
+
+    fun setCoverPhoto(coverPhoto: String) {
+        this.coverPhoto = coverPhoto
     }
 }

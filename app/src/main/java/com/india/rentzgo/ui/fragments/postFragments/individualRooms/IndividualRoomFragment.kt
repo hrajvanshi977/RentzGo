@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.india.rentzgo.CurrentPostingProperty
+import com.india.rentzgo.CurrentPostingPropertyDetails
 import com.india.rentzgo.PropertyPriceActivity
 import com.india.rentzgo.R
 import com.india.rentzgo.utils.dialog.IndividualsRoomDialog
@@ -54,17 +54,17 @@ class IndividualRoomFragment : Fragment() {
 
         val nextButton = view.findViewById(R.id.nextIndividual) as TextView
         nextButton.setOnClickListener {
-            CurrentPostingProperty.propertyTitle = view.findViewById<EditText>(R.id.propertyTitle).text.toString()
-            CurrentPostingProperty.maxPeople = view.findViewById<EditText>(R.id.maxPeople).text.toString()
-            CurrentPostingProperty.furnishing = view.findViewById<EditText>(R.id.furnishing).text.toString()
-            CurrentPostingProperty.facing = view.findViewById<EditText>(R.id.facing).text.toString()
-            CurrentPostingProperty.totalFloors = view.findViewById<EditText>(R.id.totalFloors).text.toString()
-            CurrentPostingProperty.currentFloor = view.findViewById<EditText>(R.id.currentFloor).text.toString()
-            CurrentPostingProperty.parkingFacility = view.findViewById<EditText>(R.id.parkingFacility).text.toString()
-            CurrentPostingProperty.propertyDescription = view.findViewById<EditText>(R.id.propertyDescription).text.toString()
-            CurrentPostingProperty.bachelorsAllowed = view.findViewById<EditText>(R.id.bachelorsAllowed).text.toString().equals("Yes")
-            CurrentPostingProperty.drinkAndSmokingAllowed = view.findViewById<EditText>(R.id.drinkAndSmokingAllowed).text.toString().equals("Yes")
-            CurrentPostingProperty.nonVegAllowed = view.findViewById<EditText>(R.id.nonVegAllowed).text.toString().equals("Yes")
+            CurrentPostingPropertyDetails.propertyTitle = view.findViewById<EditText>(R.id.propertyTitle).text.toString()
+            CurrentPostingPropertyDetails.maxPeople = view.findViewById<EditText>(R.id.maxPeople).text.toString()
+            CurrentPostingPropertyDetails.furnishing = view.findViewById<EditText>(R.id.furnishing).text.toString()
+            CurrentPostingPropertyDetails.facing = view.findViewById<EditText>(R.id.facing).text.toString()
+            CurrentPostingPropertyDetails.totalFloors = view.findViewById<EditText>(R.id.totalFloors).text.toString()
+            CurrentPostingPropertyDetails.currentFloor = view.findViewById<EditText>(R.id.currentFloor).text.toString()
+            CurrentPostingPropertyDetails.parkingFacility = view.findViewById<EditText>(R.id.parkingFacility).text.toString()
+            CurrentPostingPropertyDetails.propertyDescription = view.findViewById<EditText>(R.id.propertyDescription).text.toString()
+            CurrentPostingPropertyDetails.bachelorsAllowed = view.findViewById<EditText>(R.id.bachelorsAllowed).text.toString().equals("Yes")
+            CurrentPostingPropertyDetails.drinkAndSmokingAllowed = view.findViewById<EditText>(R.id.drinkAndSmokingAllowed).text.toString().equals("Yes")
+            CurrentPostingPropertyDetails.nonVegAllowed = view.findViewById<EditText>(R.id.nonVegAllowed).text.toString().equals("Yes")
             val intent = Intent(view.context, PropertyPriceActivity::class.java)
             startActivity(intent)
         }

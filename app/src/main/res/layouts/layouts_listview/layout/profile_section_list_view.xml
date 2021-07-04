@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    android:padding="10dp"
+    app:cardElevation="3dp">
+
+    <ImageView
+        android:id="@+id/startIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:foregroundGravity="center_vertical"
+        android:padding="10dp"
+        android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+
+    <TextView
+        android:id="@+id/optionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/startIcon"
+        android:foregroundGravity="center_vertical"
+        android:text="Hi"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/optionSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@id/startIcon"
+        android:foregroundGravity="center_vertical"
+        android:text="Hi"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/endIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:foregroundGravity="center_vertical"
+        android:padding="10dp"
+        android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+
+</RelativeLayout>

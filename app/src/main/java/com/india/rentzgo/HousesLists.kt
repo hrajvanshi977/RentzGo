@@ -27,7 +27,6 @@ import single.NearbyProperties
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class HousesLists : AppCompatActivity() {
     lateinit var firebaseAuth: FirebaseAuth
     var list = ArrayList<String>()
@@ -38,7 +37,6 @@ class HousesLists : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private val fragmentManager = supportFragmentManager
     private var activeFragment: Fragment = homeFragment
-
     lateinit var locationSearch: EditText
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -57,13 +55,13 @@ class HousesLists : AppCompatActivity() {
         setContentView(R.layout.activity_houses_lists)
         println("size of the nearby list is ${NearbyProperties.list.size}")
 
-       /* var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
-        var gson = Gson()
-        var json: String? = sharedPreferences.getString("Houses", "")
-        var type = object : TypeToken<ArrayList<String?>?>() {}.type
-        var list: ArrayList<String> = gson.fromJson(json, type)
-        SharedPreferenceHouseLists.housesLists = list
-        */
+        /* var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
+         var gson = Gson()
+         var json: String? = sharedPreferences.getString("Houses", "")
+         var type = object : TypeToken<ArrayList<String?>?>() {}.type
+         var list: ArrayList<String> = gson.fromJson(json, type)
+         SharedPreferenceHouseLists.housesLists = list
+         */
         Thread {
             loadHouses()
         }.start()
@@ -108,8 +106,21 @@ class HousesLists : AppCompatActivity() {
                 Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
-
+    override fun finish() {
+        var builder = android.app.AlertDialog.Builder(this, R.style.AlertDialogStyle)
+        builder.setMessage("Are you sure you want to exit?")
+        builder.setCancelable(true)
+        builder.setNegativeButton(
+            "Yes"
+        ) { dialog, id -> super.finish() }
+        builder.setPositiveButton(
+            "No"
+        )
+        { dialog, id -> dialog.cancel() }
+        val alert = builder.create()
+        alert!!.show()
     }
 
     private fun showFragment(activeFragment: Fragment) {
@@ -134,15 +145,15 @@ class HousesLists : AppCompatActivity() {
                 )
             }
 
-            if (activeFragment == doPostFragment) {
-                add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).show(
-                    doPostFragment
-                )
-            } else {
-                add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).hide(
-                    doPostFragment
-                )
-            }
+//            if (activeFragment == doPostFragment) {
+//                add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).show(
+//                    doPostFragment
+//                )
+//            } else {
+//                add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).hide(
+//                    doPostFragment
+//                )
+//            }
             if (activeFragment == notificationFragment) {
                 add(
                     R.id.nav_host_fragment,
@@ -185,9 +196,9 @@ class HousesLists : AppCompatActivity() {
             add(R.id.nav_host_fragment, myAdsFragment, getString(R.string.title_myAds)).hide(
                 myAdsFragment
             )
-            add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).hide(
-                doPostFragment
-            )
+//            add(R.id.nav_host_fragment, doPostFragment, getString(R.string.title_doPost)).hide(
+//                doPostFragment
+//            )
             add(
                 R.id.nav_host_fragment,
                 notificationFragment,
@@ -229,9 +240,6 @@ class HousesLists : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_doPost -> {
-                    fragmentManager.beginTransaction().hide(activeFragment).show(doPostFragment)
-                        .commit()
-                    activeFragment = doPostFragment
                     postActivity()
                     true
                 }
@@ -256,7 +264,7 @@ class HousesLists : AppCompatActivity() {
 
     private fun postActivity() {
         val intent = Intent(this, PostActivity::class.java)
-        startActivity(intent);
+        startActivity(intent)
     }
 
     private fun getCurrentLocationAddress() {
@@ -299,4 +307,6 @@ class HousesLists : AppCompatActivity() {
             }
         }
     }
+
+
 }

@@ -31,21 +31,21 @@ class PropertyPriceActivity : AppCompatActivity() {
         submit.setOnClickListener {
             setBuilder()
 //            getCurrentLocationAddress()
-            CurrentPostingProperty.uniqueId = getUniqueKey()
+            CurrentPostingPropertyDetails.uniqueId = getUniqueKey()
 
             var individualRoom = getNewlyCreatedProperty(
-                CurrentPostingProperty.uniqueId,
-                CurrentPostingProperty.PropertyType
+                CurrentPostingPropertyDetails.uniqueId,
+                CurrentPostingPropertyDetails.PropertyType
             )
-            DBUtils().saveProperty(
-                individualRoom,
-                CurrentPostingProperty.uniqueId
-            )
+//            DBUtils().saveProperty(
+//                individualRoom,
+//                CurrentPostingPropertyDetails.uniqueId
+//            )
 
-            DBUtils().savePropertyImages(
-                CurrentPostingProperty.images,
-                CurrentPostingProperty.uniqueId
-            )
+//            DBUtils().savePropertyImages(
+//                CurrentPostingPropertyDetails.images,
+//                CurrentPostingPropertyDetails.uniqueId
+//            )
 
             Handler(Looper.myLooper()!!).postDelayed({
                 val intent = Intent(this, SuccessfullyAdded::class.java)
@@ -83,10 +83,11 @@ class PropertyPriceActivity : AppCompatActivity() {
         var ownerId = FirebaseAuth.getInstance().currentUser.uid
         val price = findViewById<EditText>(R.id.priceView)
 
-        return IndividualRoom(
+        var individualRoom = IndividualRoom(
+            "",
             propertyId,
             ownerId,
-            CurrentPostingProperty.propertyTitle,
+            CurrentPostingPropertyDetails.propertyTitle,
             Properties.INDIVIDUALROOM.toString(),
             false,
             price.text.toString(),
@@ -94,17 +95,23 @@ class PropertyPriceActivity : AppCompatActivity() {
             Date().toString(),
             2,
             getCurrentLocationAddress(),
-            CurrentPostingProperty.maxPeople,
-            CurrentPostingProperty.furnishing,
-            CurrentPostingProperty.facing,
-            CurrentPostingProperty.totalFloors,
-            CurrentPostingProperty.currentFloor,
-            CurrentPostingProperty.parkingFacility,
-            CurrentPostingProperty.bachelorsAllowed,
-            CurrentPostingProperty.nonVegAllowed,
-            CurrentPostingProperty.drinkAndSmokingAllowed,
-            CurrentPostingProperty.propertyDescription
+            CurrentPostingPropertyDetails.maxPeople,
+            CurrentPostingPropertyDetails.furnishing,
+            CurrentPostingPropertyDetails.facing,
+            CurrentPostingPropertyDetails.totalFloors,
+            CurrentPostingPropertyDetails.currentFloor,
+            CurrentPostingPropertyDetails.parkingFacility,
+            CurrentPostingPropertyDetails.bachelorsAllowed,
+            CurrentPostingPropertyDetails.nonVegAllowed,
+            CurrentPostingPropertyDetails.drinkAndSmokingAllowed,
+            CurrentPostingPropertyDetails.propertyDescription
         )
+
+        DBUtils().savePropertyImages(
+            CurrentPostingPropertyDetails.images,
+            individualRoom
+        )
+        return individualRoom
     }
 
     private fun setBuilder() {

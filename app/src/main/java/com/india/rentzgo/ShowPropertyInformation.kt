@@ -11,12 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.lottie.LottieAnimationView
 import com.av.smoothviewpager.Smoolider.SmoothViewpager
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.gson.Gson
 import com.india.rentzgo.data.properties.IndividualRoom
 import com.like.LikeButton
-import com.squareup.picasso.Picasso
+
 
 class ShowPropertyInformation : AppCompatActivity() {
     private lateinit var viewPagerProgressBar: ProgressBar
@@ -47,10 +49,21 @@ class ShowPropertyInformation : AppCompatActivity() {
 
     private fun onClickProgress() {
         likeButton.setOnClickListener {
-            if(!likeButton.isLiked) {
+            if (!likeButton.isLiked) {
                 likeButton.isLiked = true
-            } else{
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Property Added in favourites",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+            } else {
                 likeButton.isLiked = false
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Property Removed from favourites",
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
         goBack.setOnClickListener {
@@ -85,10 +98,8 @@ class ShowPropertyInformation : AppCompatActivity() {
                 FirebaseStorage.getInstance().reference.child("Images")
                     .child(s).child("$index")
             filePath.downloadUrl.addOnSuccessListener {
-                Picasso.get().load(it).into(propertyImage)
-                Handler(Looper.myLooper()!!).postDelayed({
-                    viewPagerProgressBar.visibility = View.GONE
-                }, 1500)
+                Glide.with(applicationContext).load(it).into(propertyImage)
+                viewPagerProgressBar.visibility = View.GONE
             }
             PropertyImagesAdapter.thisList.add(view)
             PropertyImagesAdapter.notifyDataSetChanged()
@@ -100,6 +111,7 @@ class ShowPropertyInformation : AppCompatActivity() {
         viewPagerProgressBar = findViewById(R.id.viewPagerProgressBar)
         goBack = findViewById(R.id.goBack)
     }
+
     private fun initializeAllFields(property: IndividualRoom) {
         var priceView = findViewById<TextView>(R.id.priceView)
         priceView.text = "₹ ${property.getPrice()}"

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +32,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.india.rentzgo.HomeClassAdapter
 import com.india.rentzgo.InfiniteScrollListener
 import com.india.rentzgo.R
@@ -54,6 +56,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     var current = 0
     var scrolled = 0
     var total = 0
+    var count = 0
     lateinit var centerHomeProgressBar: ProgressBar
 
     lateinit var locationSearch: EditText
@@ -63,6 +66,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
 
     private lateinit var infiniteScrollListener: InfiniteScrollListener
     var root: View? = null
+    lateinit var uri : Uri
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,7 +77,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
         } else {
             root = inflater.inflate(R.layout.fragment_home, container, false)
             Handler(Looper.myLooper()!!).post {
-                adapter = HomeClassAdapter(res)
+                adapter = HomeClassAdapter(requireContext(), res)
                 Log.d(TAG, "onCreateView: ${res.size}")
                 manager = LinearLayoutManager(activity)
                 infiniteScrollListener = InfiniteScrollListener(manager, this)
@@ -86,8 +90,8 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                 recyclerView.adapter = adapter
                 recyclerView.addOnScrollListener(infiniteScrollListener)
                 NearbyProperties.index = 0     //clearing the index so that we can fill recycler view from beginning everytime when we enter in home
+                count = 0
                 showHomes()
-                infiniteScrollListener.setLoaded()
 
 
                 if (!Places.isInitialized()) {
@@ -117,17 +121,14 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                         centerHomeProgressBar.visibility = View.GONE
                     }
                 }
-
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-
                     if(index >= NearbyProperties.list.size) {
                         return
                     }
                     current = manager.childCount
                     total = adapter.itemCount
                     scrolled = manager.findFirstVisibleItemPosition()
-
                     if (isScrolling && (current + scrolled >= total)) {
                         homeProgressBar.visibility = View.VISIBLE
                         Handler().postDelayed({
@@ -193,12 +194,10 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     override fun onStart() {
         super.onStart()
         /* var list = SharedPreferenceHouseLists.housesLists
-
          if (list.size != 0) {
              Handler().postDelayed({
                  fetchData(list)
              }, 2000)
-
          } else {
              val radius = 30.0
              val reference = FirebaseDatabase.getInstance().getReference().child("Users")
@@ -265,7 +264,6 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                      val key = NearbyProperties.list[i].id
                      val distance = NearbyProperties.list[i].distance.toString()
                      var firebaseFirestore = FirebaseFirestore.getInstance()
-
                      val path =
                          firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
                              .document("BasicInfo")
@@ -371,16 +369,19 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     override fun onLoadMore() {
         Log.d(TAG, "onLoadMore size : ${NearbyProperties.list.size}")
         Log.d(TAG, "onLoadMore index: ${NearbyProperties.index}")
-        adapter.addNullData()
-        recyclerView.post {
-            recyclerView.adapter!!.notifyDataSetChanged()
+        if(count != 0  ) {
+            adapter.addNullData()
+            recyclerView.post {
+                recyclerView.adapter!!.notifyDataSetChanged()
+            }
         }
+
         val propertiesTemp = ArrayList<FetchedProperties>()
         var runnable = Runnable {
             var temp = NearbyProperties.index
             println("size of the list is ${NearbyProperties.list.size}")
             if (NearbyProperties.index < NearbyProperties.list.size) {
-                for (i in temp..temp + 1) {
+                for (i in temp..temp + 19) {
                     NearbyProperties.index = i + 1
                     if (i >= NearbyProperties.list.size)
                         break
@@ -392,7 +393,6 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                         firebaseFirestore.collection("Properties/${key}/${Properties.INDIVIDUALROOM}")
                             .document("BasicInfo")
                     propertiesTemp.add(FetchedProperties(path, distance))
-                    Thread.sleep(500)
                 }
             }
             addPropertyIntoRecyclerView(propertiesTemp)
@@ -401,9 +401,11 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     }
 
     private fun addPropertyIntoRecyclerView(propertiesTemp: ArrayList<FetchedProperties>) {
-        adapter.removeNullData()
-        recyclerView.post {
-            recyclerView.adapter!!.notifyDataSetChanged()
+        if(count != 0 )  {
+            adapter.removeNullData()
+            recyclerView.post {
+                recyclerView.adapter!!.notifyDataSetChanged()
+            }
         }
         for(index in 0 until propertiesTemp.size) {
             var path = propertiesTemp[index].reference
@@ -423,6 +425,19 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                 Log.d("failed", "get failed with", it)
             }
         }
+        count++
+    }
+
+    private fun getCoverPhotoUri(propertyId: String?): Uri? {
+        var coverPhoto : Uri? = null
+        val filePath =
+            FirebaseStorage.getInstance().reference.child("Images").child(propertyId!!).child("0")
+        filePath.downloadUrl.addOnSuccessListener {
+            Log.d(TAG, "loadImage: $it")
+            this.uri = it
+        }
+//        println("coverPhoto in homefragment: ${uri.toString()}")
+        return uri
     }
 }
 

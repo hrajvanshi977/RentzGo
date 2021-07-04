@@ -3,6 +3,7 @@ package com.india.rentzgo.utils
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.rentzgo.data.Users.Users
@@ -93,12 +94,35 @@ class DBUtils : AppCompatActivity() {
         return addresses
     }
 
-    fun savePropertyImages(images: ArrayList<ByteArray>, propertyId: String): Boolean {
+    fun savePropertyImages(images: ArrayList<ByteArray>, individualRoom: IndividualRoom): Boolean {
         val filePath =
-            FirebaseStorage.getInstance().reference.child("Images").child(propertyId)
+            FirebaseStorage.getInstance().reference.child("Images")
+                .child(individualRoom.getPropertyId()!!)
         for (index in 0 until images.size) {
-            val uploadTask = filePath.child(index.toString()).putBytes(images[index])
+            if (index == 0) {
+                val uploadTask =
+                    filePath.child(index.toString()).putBytes(images[index]).addOnSuccessListener {
+                        filePath.child("0").downloadUrl.addOnSuccessListener {
+                            println("coverPhoto ${it.toString()}")
+                            individualRoom.setCoverPhoto(it.toString())
+                            DBUtils().saveProperty(
+                                individualRoom,
+                                individualRoom.getPropertyId()!!
+                            )
+                        }
+                    }
+            } else {
+                val uploadTask = filePath.child(index.toString()).putBytes(images[index])
+            }
         }
         return true
+    }
+
+    fun getCurrentUserName(): String {
+        return FirebaseAuth.getInstance().currentUser.displayName.toString()
+    }
+
+    fun getProfileUri(): Uri {
+       return FirebaseAuth.getInstance().currentUser.photoUrl
     }
 }

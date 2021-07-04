@@ -2,7 +2,6 @@ package com.india.rentzgo.utils.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -38,8 +37,8 @@ class IndividualsRoomDialog(itemId: Int, propertyFields: EditText, propertyField
             dismiss()
         }
         builder.setView(view)
-            .setPositiveButton("", DialogInterface.OnClickListener { dialog, which ->
-            })
+            .setPositiveButton("") { dialog, which ->
+            }
         return builder.create()
     }
 

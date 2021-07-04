@@ -1,6 +1,6 @@
 package com.india.rentzgo
 
-object CurrentPostingProperty {
+object CurrentPostingPropertyDetails {
     lateinit var propertyTitle: String
     lateinit var maxPeople: String
     lateinit var furnishing: String

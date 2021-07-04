@@ -82,7 +82,7 @@ class MainActivityTest : AppCompatActivity() {
             } else {
                 val list = imageAdapter.thisList
                 if (list.size != 0) {
-                    CurrentPostingProperty.images.clear()
+                    CurrentPostingPropertyDetails.images.clear()
                     for (item in 0 until list.size) {
                         val view = list[item]
                         val imageView = view.findViewById<ImageView>(R.id.imageMine)
@@ -93,7 +93,7 @@ class MainActivityTest : AppCompatActivity() {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
                         val array = baos.toByteArray()
 //                        val uploadTask = filePath.child(item.toString()).putBytes(array)
-                        CurrentPostingProperty.images.add(array)
+                        CurrentPostingPropertyDetails.images.add(array)
                     }
                 }
                 val postActivityIntent = Intent(this, PostActivity::class.java)

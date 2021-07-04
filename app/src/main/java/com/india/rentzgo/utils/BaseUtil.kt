@@ -1,12 +1,20 @@
 package com.india.rentzgo.utils
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
+import com.india.rentzgo.R
 import single.NearbyProperties
 import java.util.*
 import kotlin.collections.ArrayList
@@ -105,4 +113,33 @@ class BaseUtil : AppCompatActivity() {
         Collections.sort(NearbyProperties.list, SortByDistance())
     }
 
+
+    fun logoutFromFirebase() {
+        FirebaseAuth.getInstance().signOut()
+    }
+
+    fun setLoader(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setView(R.layout.progress_layout)
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    fun removeBuilder(requireContext: Context) {
+
+    }
+
+    fun logoutFromGoogle(context: Context) {
+        var googleSignInClient: GoogleSignInClient
+        val googleSignInOptions =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+        googleSignInClient.signOut()
+    }
 }

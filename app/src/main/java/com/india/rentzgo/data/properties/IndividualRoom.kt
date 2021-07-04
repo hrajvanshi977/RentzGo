@@ -17,6 +17,7 @@ class IndividualRoom : Property {
     constructor() {}
 
     constructor(
+        coverPhoto: String,
         propertyId: String,
         ownerId: String,
         propertyTitle: String,
@@ -38,6 +39,7 @@ class IndividualRoom : Property {
         drinkAndSmokingAllowed: Boolean,
         propertyDescription: String,
     ) : super(
+        coverPhoto,
         propertyId,
         ownerId,
         propertyTitle,
