@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.india.rentzgo.ChatList
 import com.india.rentzgo.HomeClassAdapter
 import com.india.rentzgo.InfiniteScrollListener
 import com.india.rentzgo.R
@@ -66,7 +68,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
 
     private lateinit var infiniteScrollListener: InfiniteScrollListener
     var root: View? = null
-    lateinit var uri : Uri
+    lateinit var uri: Uri
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,7 +91,8 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
                 recyclerView.layoutManager = manager
                 recyclerView.adapter = adapter
                 recyclerView.addOnScrollListener(infiniteScrollListener)
-                NearbyProperties.index = 0     //clearing the index so that we can fill recycler view from beginning everytime when we enter in home
+                NearbyProperties.index =
+                    0     //clearing the index so that we can fill recycler view from beginning everytime when we enter in home
                 count = 0
                 showHomes()
 
@@ -163,9 +166,14 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
 //        }
         }
 
+        var imageView: ImageView = root!!.findViewById(R.id.mainChat)
+        imageView.setOnClickListener {
+            val intent = Intent(requireContext(), ChatList::class.java)
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.slide_in_right_fast, R.anim.slide_out_left_fast)
+        }
         return root
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
@@ -369,7 +377,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     override fun onLoadMore() {
         Log.d(TAG, "onLoadMore size : ${NearbyProperties.list.size}")
         Log.d(TAG, "onLoadMore index: ${NearbyProperties.index}")
-        if(count != 0  ) {
+        if (count != 0) {
             adapter.addNullData()
             recyclerView.post {
                 recyclerView.adapter!!.notifyDataSetChanged()
@@ -401,13 +409,13 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     }
 
     private fun addPropertyIntoRecyclerView(propertiesTemp: ArrayList<FetchedProperties>) {
-        if(count != 0 )  {
+        if (count != 0) {
             adapter.removeNullData()
             recyclerView.post {
                 recyclerView.adapter!!.notifyDataSetChanged()
             }
         }
-        for(index in 0 until propertiesTemp.size) {
+        for (index in 0 until propertiesTemp.size) {
             var path = propertiesTemp[index].reference
             var distance = propertiesTemp[index].distance
             path.get().addOnSuccessListener {
@@ -429,7 +437,7 @@ class HomeFragment : Fragment(), GeoQueryEventListener, InfiniteScrollListener.O
     }
 
     private fun getCoverPhotoUri(propertyId: String?): Uri? {
-        var coverPhoto : Uri? = null
+        var coverPhoto: Uri? = null
         val filePath =
             FirebaseStorage.getInstance().reference.child("Images").child(propertyId!!).child("0")
         filePath.downloadUrl.addOnSuccessListener {

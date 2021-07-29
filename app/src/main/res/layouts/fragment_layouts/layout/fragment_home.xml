@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D5DADD"
     android:focusable="false"
     android:focusableInTouchMode="false"
     android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment"
-    android:background="#D5DADD">
+    tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
         android:id="@+id/firstLinearLayout"
@@ -22,8 +22,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:focusable="false"
-            android:outlineAmbientShadowColor="@color/lightGray"
             android:focusableInTouchMode="false"
+            android:outlineAmbientShadowColor="@color/lightGray"
             android:outlineSpotShadowColor="@color/black"
             app:layout_constraintVertical_weight="1"
             tools:ignore="MissingConstraints">
@@ -35,13 +35,14 @@
                 android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
+
                 <EditText
                     android:id="@+id/locationSearch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="4"
                     android:layout_margin="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="10"
                     android:background="@android:drawable/editbox_background"
                     android:drawableLeft="@drawable/ic_search_black_24dp"
                     android:drawablePadding="10dp"
@@ -50,15 +51,13 @@
                     android:padding="13dp"
                     android:textAllCaps="false" />
 
-                <!--                <Button-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_margin="10dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:background="@color/primary_color"-->
-                <!--                    android:text="Search"-->
-                <!--                    android:textAllCaps="false"-->
-                <!--                    android:textColor="@color/white" />-->
+                <ImageView
+                    android:id="@+id/mainChat"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/chat" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
@@ -66,37 +65,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_below="@+id/firstLinearLayout"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/firstLinearLayout">
+        android:orientation="vertical">
 
-<!--        <ScrollView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-<!--                <com.airbnb.lottie.LottieAnimationView-->
-<!--                    android:id="@+id/homeProgressBar"-->
-<!--                    app:lottie_rawRes="@raw/loading_6217"-->
-<!--                    app:lottie_autoPlay="true"-->
-<!--                    app:lottie_loop="true"-->
-<!--                    android:layout_width="100dp"-->
-<!--                    android:layout_height="100dp"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_below="@+id/home_recycler_view"-->
-<!--                    android:layout_margin="20dp"-->
-<!--                    android:visibility="visible" />-->
-            </RelativeLayout>
-<!--        </ScrollView>-->
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -107,17 +90,17 @@
             android:id="@+id/no_internet_access_animation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:lottie_rawRes="@raw/no_internet_access_animation"
-            app:lottie_loop="true"
-            app:lottie_autoPlay="true"
+            android:scaleType="fitXY"
             android:visibility="gone"
-            android:scaleType="fitXY"/>
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/no_internet_access_animation" />
 
         <ProgressBar
             android:id="@+id/centerHomeProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </RelativeLayout>
 </RelativeLayout>

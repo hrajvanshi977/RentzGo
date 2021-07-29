@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -26,13 +25,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RentzGo">
         <activity
+            android:name=".ChatList"
+            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"/>
+        <activity android:name=".ChatActivity" />
+        <activity
             android:name=".SuccessfullyAdded"
-            android:theme="@style/Theme.RentzGo.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.RentzGo.NoActionBar" />
         <activity
             android:name=".ShowPropertyInformation"
-            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"></activity>
+            android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -67,7 +68,7 @@
             android:theme="@style/Theme.RentzGo.NoActionBarWithStatusBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity

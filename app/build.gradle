@@ -98,4 +98,5 @@ dependencies {
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
     implementation("com.android.volley:volley:1.1.1")
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

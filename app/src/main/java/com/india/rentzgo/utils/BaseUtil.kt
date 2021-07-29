@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -18,6 +17,8 @@ import com.india.rentzgo.R
 import single.NearbyProperties
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.*
+
 
 class PropertiesAndDistance(var distance: Float, var id: String)
 
@@ -90,11 +91,11 @@ class BaseUtil : AppCompatActivity() {
 
         val dlon = longitude2 - longitude1
         val dlat = latitude2 - latitude1
-        val a = (Math.pow(Math.sin(dlat / 2), 2.0)
-                + (Math.cos(latitude1) * Math.cos(latitude2)
-                * Math.pow(Math.sin(dlon / 2), 2.0)))
+        val a = (Math.sin(dlat / 2).pow(2.0)
+                + (cos(latitude1) * cos(latitude2)
+                * sin(dlon / 2).pow(2.0)))
 
-        val c = 2 * Math.asin(Math.sqrt(a))
+        val c = 2 * asin(sqrt(a))
 
         val r = 6371.0
 
@@ -128,18 +129,10 @@ class BaseUtil : AppCompatActivity() {
         dialog.show()
     }
 
-    fun removeBuilder(requireContext: Context) {
-
-    }
-
     fun logoutFromGoogle(context: Context) {
-        var googleSignInClient: GoogleSignInClient
-        val googleSignInOptions =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-        googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
-        googleSignInClient.signOut()
+        GoogleSignIn.getClient(
+            context,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        ).signOut()
     }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -39,6 +40,11 @@ class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 123
 
     override fun onStart() {
+        if(FirebaseAuth.getInstance().currentUser != null )  {
+            val intent = Intent(this, HousesLists::class.java)
+            startActivity(intent)
+            finish()
+        }
         super.onStart()
         signProgressBarAnimation.visibility = LottieAnimationView.GONE
         googleSignProgressBarAnimation.visibility = LottieAnimationView.GONE
@@ -152,6 +158,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun finish() {
+        ActivityCompat.finishAffinity(this)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -183,7 +193,6 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }, 100L)
-
                 } else {
                     Toast.makeText(this, "Sorry Auth failed", Toast.LENGTH_SHORT).show()
                 }

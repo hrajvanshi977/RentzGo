@@ -497,11 +497,13 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/chatBtn"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/round_button"
+                    android:onClick="goToChatActivity"
                     android:text="Chat"
                     android:textAllCaps="false" />
 

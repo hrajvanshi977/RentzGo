@@ -76,13 +76,11 @@ class HomeClassAdapter(var context: Context, var mHouse: ArrayList<IndividualRoo
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val property = mHouse[position]
         if (property != null) {
-//          loadImage(holder, property.getCoverPhoto())
             var progressbar =
                 holder.listItemView.findViewById<LottieAnimationView>(R.id.progressbar)
             Log.d(ContentValues.TAG, "onBindViewHolder: ${property.getCoverPhoto()}")
             Glide.with(context).load(Uri.parse(property.getCoverPhoto()))
                 .into(holder.propertyImage)
-//          Picasso.get().load(Uri.parse(property.getCoverPhoto())).into(holder.propertyImage)
             progressbar.visibility = View.GONE
             holder.distance.text = property.getDistance()
             holder.rate.text = "₹ ${property.getPrice()}"

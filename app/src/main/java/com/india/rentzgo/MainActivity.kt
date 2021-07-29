@@ -1,6 +1,7 @@
 package com.india.rentzgo
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -34,7 +35,9 @@ class MainActivity : AppCompatActivity(), LocationListener {
             FirebaseDatabase.getInstance().reference.child("Properties").child("India")
                 .child("Rajasthan").child("Jaipur")
         getData()
+        var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
         /*
+
         var sharedPreference: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
         var sharedPreferenceEditor: SharedPreferences.Editor = sharedPreference.edit()
         var gson = Gson()

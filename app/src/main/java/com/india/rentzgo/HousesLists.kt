@@ -1,6 +1,7 @@
 package com.india.rentzgo
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
@@ -55,7 +56,8 @@ class HousesLists : AppCompatActivity() {
         setContentView(R.layout.activity_houses_lists)
         println("size of the nearby list is ${NearbyProperties.list.size}")
 
-        /* var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
+        var sharedPreferences: SharedPreferences = getSharedPreferences("RentzGo", MODE_PRIVATE)
+        /*
          var gson = Gson()
          var json: String? = sharedPreferences.getString("Houses", "")
          var type = object : TypeToken<ArrayList<String?>?>() {}.type

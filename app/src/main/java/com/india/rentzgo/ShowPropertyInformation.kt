@@ -1,5 +1,6 @@
 package com.india.rentzgo
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,11 +25,12 @@ class ShowPropertyInformation : AppCompatActivity() {
     private lateinit var viewPagerProgressBar: ProgressBar
     private lateinit var likeButton: LikeButton
     private lateinit var goBack: ImageView
+    private lateinit var property: IndividualRoom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Handler(Looper.myLooper()!!).postDelayed({
             val gson = Gson()
-            val property: IndividualRoom =
+             property =
                 gson.fromJson(intent.getStringExtra("PROPERTYID"), IndividualRoom::class.java)
             initializeAllFields(property)
             var imageView = findViewById<ImageView>(R.id.image)
@@ -144,5 +146,11 @@ class ShowPropertyInformation : AppCompatActivity() {
             if (property.isDrinkAndSmokingAllowed() == true) "Yes" else "No"
         var propertyDescription = findViewById<TextView>(R.id.propertyDescription)
         propertyDescription.text = property.getPropertyDescription()
+    }
+
+    fun goToChatActivity(view: View) {
+        val intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra("OWNERID", property.getOwnerId())
+        startActivity(intent)
     }
 }

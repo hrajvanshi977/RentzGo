@@ -130,8 +130,8 @@ class ProfileFragment : Fragment() {
         ) { dialog, id ->
             try {
                 baseUtil.setLoader(requireContext())
-                baseUtil.logoutFromGoogle(requireContext())
                 baseUtil.logoutFromFirebase()
+                baseUtil.logoutFromGoogle(requireContext())
             } catch (exception: Exception) {
                 Log.d(TAG, "goForLogout: ${exception.printStackTrace()}")
             }
@@ -147,4 +147,5 @@ class ProfileFragment : Fragment() {
         val alert = builder.create()
         alert!!.show()
     }
+
 }
